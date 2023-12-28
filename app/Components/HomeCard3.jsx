@@ -16,6 +16,7 @@ import Favorite from "@mui/icons-material/Favorite";
 import { getPopularity } from "../service/getPopularity";
 import toast, { Toaster } from "react-hot-toast";
 import slugify from "slugify";
+import Link from "next/link";
 const HomeCard3 = () => {
     const [card, setCard] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -42,7 +43,6 @@ const HomeCard3 = () => {
     }, []);
     const handleCardClick = (response) => {
         localStorage.setItem("clickedCard", JSON.stringify(response))
-        router.push(`/top-trending/${slugify(response.title)}`)
     }
     return (
         <>
@@ -72,6 +72,9 @@ const HomeCard3 = () => {
                                 <Grid item xs={12} sm={6} md={6} lg={4} key={response.id}>
 
                                     <Box>
+
+
+
                                         <Card sx={{
                                             maxWidth: "100%",
                                             transition: "transform 0.3s ease-in-out",
@@ -84,16 +87,17 @@ const HomeCard3 = () => {
                                         >
                                             <CardHeader
                                                 title={response.title}
-                                                sx={{ background: "#d4d5ee" }}
+                                                sx={{ background: "#ff2800" }}
                                             />
-                                            <CardMedia
-                                                component="img"
-                                                image={response.urlToImage ? response.urlToImage : "/News-logo.jpg"}
-                                                alt={response.alt}
-                                                sx={{ cursor: "pointer", objectFit: 'cover' }}
-                                                onClick={() => handleCardClick(response)}
-                                            />
-                                            <CardActions  sx={{
+                                            <Link href={`/top-trending/${slugify(response.title)}`}>
+                                                <CardMedia
+                                                    component="img"
+                                                    image={response.urlToImage ? response.urlToImage : "/News-logo.jpg"}
+                                                    alt={response.alt}
+                                                    sx={{ cursor: "pointer", objectFit: 'cover' }}
+                                                    onClick={() => handleCardClick(response)}
+                                                /></Link>
+                                            <CardActions sx={{
                                                 position: 'absolute',
                                                 right: 0,
                                                 top: 0,
@@ -110,6 +114,7 @@ const HomeCard3 = () => {
                                             </CardActions>
                                         </Card>
                                         <br />
+
                                     </Box>
                                 </Grid>
                             ))}

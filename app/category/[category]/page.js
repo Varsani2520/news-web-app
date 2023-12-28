@@ -58,7 +58,7 @@ const CategoryPage = () => {
     router.push(`/category/${category}/${slugify(card.title)}`);
   };
   return (
-    <Container maxWidth="xl">
+    <Container maxWidth="xl" sx={{ mt: { xs: "25%", md: "15%", lg: "10%" } }}>
       <Toaster />
       <Grid container spacing={2}>
         {loading
@@ -94,7 +94,7 @@ const CategoryPage = () => {
                 >
                   <CardHeader
                     title={card.title}
-                    sx={{ background: "#d4d5ee" }}
+                    sx={{ background: "#ff2800" }}
                   />
                   <CardMedia
                     component="img"

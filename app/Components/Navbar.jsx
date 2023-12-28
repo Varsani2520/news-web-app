@@ -22,6 +22,12 @@ import { handleSignIn } from "../context/AuthContext";
 import { TextField } from "@mui/material";
 import PhoneIcon from "@mui/icons-material/Phone";
 import GoogleIcon from "@mui/icons-material/Google";
+import "react-phone-input-2/lib/style.css";
+import PhoneInput from "react-phone-input-2";
+import PhoneOtp from "./PhoneOtp";
+import { RecaptchaVerifier, getAuth, signInWithPhoneNumber } from "firebase/auth";
+import { auth } from "../firebase";
+import toast, { Toaster } from "react-hot-toast";
 
 
 const pages = [
@@ -72,11 +78,88 @@ function Navbar() {
     const [loading, setLoading] = React.useState(true);
 
     const router = useRouter();
-    const authenticated = useSelector((state) => state.user.user && state.user.user.isAuthenticated);
-    const user = authenticated ? useSelector((state) => state.user.user.url) : ""
+    const authenticated = useSelector((state) => state.user.isAuthenticated);
+    const user = authenticated ? useSelector((state) => state.user.user.url) : "/News-logo.jpg"
+    console.log(user)
+    const [users, setUserDetails] = React.useState({
+        email: "", password: ''
+    })
+    const [otpModel, setOtpModel] = React.useState(false);
+    const [ph, setPh] = React.useState("");
+    const [signupLoading, setSignupLoading] = React.useState(false);
+    const [open, setOpen] = React.useState(false);
 
+    async function onSignup({
+        setLoading,
+        onCaptchVerify,
+        setSignupLoading,
+        setOtpModel,
+        setOpen,
+        ph,
+    }) {
+
+        // setLoading(true);
+        // setSignupLoading(true);
+        onCaptchVerify();
+
+        const appVerifier = window.recaptchaVerifier;
+        const formatPh = "+" + ph;
+        console.log("pghone", formatPh);
+
+        setOtpModel(true);
+        signInWithPhoneNumber(auth, formatPh, appVerifier)
+            .then((confirmationResult) => {
+                toast.success("OTP sended successfully!");
+                window.confirmationResult = confirmationResult;
+                setOpen(false);
+                setLoading(false);
+                setSignupLoading(false);
+
+            })
+            .catch((error) => {
+                console.log("error in sending otp", error);
+            });
+    }
+    // when user verify capture
+    async function onCaptchVerify() {
+        const auth = getAuth();
+        if (!window.recaptchaVerifier) {
+            window.recaptchaVerifier = new RecaptchaVerifier(
+                auth,
+                "recapture",
+                {
+                    size: "invisible",
+                    callback: (response) => {
+                        // callback function signUp that contain all other stuff like ph, setphone etc...
+                        onSignup({
+                            setLoading,
+                            onCaptchVerify,
+                            setSignupLoading,
+                            setOtpModel,
+                            setOpen,
+                            ph,
+                        });
+                    },
+                }
+            );
+        }
+    }
+
+    // when user click sign up btn
+    async function handleSubmit(e) {
+        e.preventDefault();
+
+        onSignup(
+            setLoading,
+            onCaptchVerify,
+            setSignupLoading,
+            setOtpModel,
+            setOpen,
+            ph
+        );
+    }
     // const [searchQuery, setSearchQuery] = React.useState("");
-    
+
     // const handleSearch = async () => {
     //     if (!searchQuery.trim()) {
     //         console.error("Search query is empty.");
@@ -104,18 +187,8 @@ function Navbar() {
     // const handleSearchInputChange = (event) => {
     //     setSearchQuery(event.target.value);
     // };
-    React.useEffect(() => {
-        const checkAuthentication = async () => {
-          await new Promise((resolve) => setTimeout(resolve, 50));
-    
-          if (!authenticated) {
-            setLoading(false);
-          }
-        };
-    
-        checkAuthentication();
-      }, [authenticated]);
-    
+
+
     return (
         <AppBar
             position="fixed"
@@ -126,6 +199,8 @@ function Navbar() {
             }}
         >
             <Container maxWidth="xl">
+                <Toaster />
+
                 <Toolbar disableGutters>
                     {/* <img src="/News-logo.jpg" style={{ height: '100px', width: '170px' }} /> */}
 
@@ -207,7 +282,7 @@ function Navbar() {
                         /> */}
                     </Box>
                     <Box sx={{ flexGrow: 0 }}>
-                        { !user ? (
+                        {!authenticated ? (
                             <>
                                 <Button
                                     component="a"
@@ -225,42 +300,60 @@ function Navbar() {
                                     <DialogTitle id="form-dialog-title">Sign up</DialogTitle>
                                     <DialogContent>
                                         <TextField
-
+                                            value={users.email}
+                                            onChange={(e) =>
+                                                setUserDetails({ ...users, email: e.target.value })
+                                            }
                                             fullWidth
                                             variant="outlined"
                                             margin="normal"
                                         />
                                         <TextField
-
+                                            value={users.password}
+                                            onChange={(e) =>
+                                                setUserDetails({ ...users, password: e.target.value })
+                                            }
                                             fullWidth
 
                                             type="password"
                                             variant="outlined"
                                             margin="normal"
                                         />
+                                        <PhoneInput
+                                            country={"in"}
+                                            value={ph}
+                                            className="appearance-none border rounded w-full border-none"
+                                            onChange={setPh}
+                                            inputStyle={{ width: "240px" }}
+                                        />
                                         <Button variant="contained"
                                             startIcon={<PhoneIcon />}
                                             sx={{ marginRight: 1 }}
+                                            onClick={() => onSignup({
+                                                setLoading: setLoading,
+                                                onCaptchVerify: onCaptchVerify,
+                                                setOtpModel: setOtpModel,
+                                                setOpen: setOpen,
+                                                ph: ph,
+                                            })}
                                         >
-                                            Phone
+                                            sign up
                                         </Button>
-                                       
+                                        <div id="recapture">
+
+                                        </div>
 
                                         <Button variant="contained"
                                             startIcon={<GoogleIcon />}
-                                            onClick={() => handleSignIn(dispatch)}
+                                            onClick={() => handleSignIn({ dispatch })}
                                         >
                                             Google
                                         </Button>
-                                            
-                                        
-
                                     </DialogContent>
                                     <DialogActions>
                                         <Button onClick={handleCloseSignUpModal} color="primary">
                                             Cancel
                                         </Button>
-
                                     </DialogActions>
                                 </Dialog>
                             </>
@@ -276,6 +369,15 @@ function Navbar() {
                         )}
                     </Box>
                 </Toolbar>
+                <Dialog open={otpModel}>
+                    <PhoneOtp
+                        user={users}
+                        setOpen={setOtpModel}
+                        loading={loading}
+                        setLoading={setLoading}
+                        phoneNo={ph}
+                    />
+                </Dialog>
             </Container>
         </AppBar >
     );

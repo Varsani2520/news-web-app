@@ -27,7 +27,7 @@ const Page = () => {
   }, []);
 
   return (
-    <Container maxWidth="xl" sx={{ marginTop: "20px" }}>
+    <Container maxWidth="xl" sx={{ mt: { xs: "25%", md: "15%", lg: "10%" } }}>
       {selectedCardData && (
         <Card sx={{ maxWidth: 1000, margin: "auto" }}>
           <CardMedia

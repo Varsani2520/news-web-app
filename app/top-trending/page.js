@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 
 import { getPopularity } from "../service/getPopularity";
 import slugify from "slugify";
+import Link from "next/link";
 const page = () => {
   const [card, setCard] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,17 +24,16 @@ const page = () => {
   }
   const handleCardClick = (response) => {
     localStorage.setItem("clickedCard", JSON.stringify(response));
-    router.push(`/top-trending/${slugify(response.title)}`)
   };
   useEffect(() => {
     fetchCards();
   }, []);
   return (
-    <Container maxWidth="xl">
+    <Container maxWidth="xl" sx={{ mt: { xs: "25%", md: "15%", lg: "10%" } }}>
       <Box sx={{ display: "flex" }}>
         <Grid container spacing={2}>
           {loading
-            ? Array.from({ length: 6 }).map((_, index) => (
+            ? Array.from({ length: 8 }).map((_, index) => (
                 <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
                   <Box>
                     <Card sx={{ maxWidth: 345 }}>
@@ -66,19 +66,21 @@ const page = () => {
                     >
                       <CardHeader
                         title={response.title}
-                        sx={{ background: "#d4d5ee" }}
+                        sx={{ background: "#ff2800" }}
                       />
-                      <CardMedia
-                        component="img"
-                        image={
-                          response.urlToImage
-                            ? response.urlToImage
-                            : "/News-logo.jpg"
-                        }
-                        alt={response.alt}
-                        sx={{ cursor: "pointer", objectFit: "cover" }}
-                        onClick={() => handleCardClick(response)}
-                      />
+                      <Link href={`/top-trending/${slugify(response.title)}`}>
+                        <CardMedia
+                          component="img"
+                          image={
+                            response.urlToImage
+                              ? response.urlToImage
+                              : "/News-logo.jpg"
+                          }
+                          alt={response.alt}
+                          sx={{ cursor: "pointer", objectFit: "cover" }}
+                          onClick={() => handleCardClick(response)}
+                        />
+                      </Link>
                       <CardContent>
                         <Typography variant="body2" color="text.secondary">
                           {response.description}

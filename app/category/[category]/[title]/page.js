@@ -28,10 +28,10 @@ const Page = () => {
   }, []);
 
   return (
-    <Container maxWidth="xl" sx={{ mt: "20px" }}>
+    <Container maxWidth="xl" sx={{ mt: { xs: "25%", md: "15%", lg: "10%" } }}>
       {parsedData && (
         <Card sx={{ maxWidth: 1000, margin: "auto" }}>
-           <IconButton
+          <IconButton
             sx={{
               position: "absolute",
               top: 0,
@@ -52,9 +52,7 @@ const Page = () => {
               position: "relative",
             }}
             image={parsedData.urlToImage || "/default-image.jpg"}
-          >
-            
-          </CardMedia>
+          ></CardMedia>
           <CardContent>
             <Typography variant="h4">{parsedData.title}</Typography>
             <Typography variant="h6">Author: {parsedData.author}</Typography>

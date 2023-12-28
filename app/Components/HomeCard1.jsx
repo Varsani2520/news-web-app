@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addToFavouriteItem } from "../action/action";
 import toast, { Toaster } from "react-hot-toast";
 import slugify from "slugify";
+import Link from "next/link";
 
 const HomeCard1 = () => {
     const [card, setCard] = useState([]);
@@ -30,7 +31,7 @@ const HomeCard1 = () => {
     }
     const handleCardClick = (response) => {
         localStorage.setItem("selectedCardData", JSON.stringify(response));
-        router.push(`/top-headlines/${slugify(response.title)}`);
+
     };
 
     async function fetchCards() {
@@ -69,6 +70,7 @@ const HomeCard1 = () => {
                         : card.slice(0, 12).map((response) => (
                             <Grid item xs={12} sm={6} md={6} lg={4} key={response.id}>
                                 <Box>
+
                                     <Card
                                         sx={{
                                             maxWidth: "100%",
@@ -83,15 +85,17 @@ const HomeCard1 = () => {
 
                                         <CardHeader
                                             title={response.title}
-                                            sx={{ background: "#d4d5ee" }}
+                                            sx={{ background: "#ff2800", textDecoration: 'none' }}
                                         />
-                                        <CardMedia
-                                            component="img"
-                                            image={response.urlToImage ? response.urlToImage : "/News-logo.jpg"}
-                                            alt={response.alt}
-                                            sx={{ cursor: "pointer", objectFit: 'cover' }}
-                                            onClick={() => handleCardClick(response)}
-                                        />
+                                        <Link href={`/top-headlines/${slugify(response.title)}`} passHref>
+                                            <CardMedia
+                                                component="img"
+                                                image={response.urlToImage ? response.urlToImage : "/News-logo.jpg"}
+                                                alt={response.alt}
+                                                sx={{ cursor: "pointer", objectFit: 'cover' }}
+                                                onClick={() => handleCardClick(response)}
+                                            />
+                                        </Link>
                                         <CardActions disableSpacing>
                                             <IconButton aria-label="add to favorites" sx={{
                                                 transition: "transform 0.3s ease-in-out",
@@ -112,6 +116,7 @@ const HomeCard1 = () => {
 
                                     </Card>
                                     <br />
+
                                 </Box>
                             </Grid>
                         ))}

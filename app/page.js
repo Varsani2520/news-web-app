@@ -17,17 +17,16 @@ export default function Home() {
   ];
 
   return (
-    <div sx={{mt:'50%'}}>
-
-    <Container maxWidth="xl">
-      <HomeSwiper />
-      <Divider1 text="Top Headlines" />
-      <HomeCard1 />
-      <Divider1 text="Categories Section" />
-      <HomeCard2 categories={categories} />
-      <Divider1 text="Trending Stories" />
-      <HomeCard3 />
-    </Container>
+    <div>
+      <Container maxWidth="xl">
+        <HomeSwiper />
+        <Divider1 text="Top Headlines" />
+        <HomeCard1 />
+        <Divider1 text="Categories Section" />
+        <HomeCard2 categories={categories} />
+        <Divider1 text="Trending Stories" />
+        <HomeCard3 />
+      </Container>
     </div>
   );
 }
