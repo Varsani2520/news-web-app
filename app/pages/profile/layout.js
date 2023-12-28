@@ -104,14 +104,6 @@ const layout = ({ children }) => {
                 </Button>
               </Link>
             </div>
-            <Divider />
-            <div style={linkStyle}>
-              <Link href="/pages/profile/notifications" passHref>
-                <Button variant="outlined" color="primary">
-                  Notification
-                </Button>
-              </Link>
-            </div>
           </Card>
         </Grid>
         <Grid item md={8} xs={12}>

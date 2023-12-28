@@ -97,21 +97,22 @@ const HomeCard3 = () => {
                                                     sx={{ cursor: "pointer", objectFit: 'cover' }}
                                                     onClick={() => handleCardClick(response)}
                                                 /></Link>
-                                            <CardActions sx={{
-                                                position: 'absolute',
-                                                right: 0,
-                                                top: 0,
-                                                backgroundColor: 'transparent',
+                                             <CardActions disableSpacing>
+                                            <IconButton aria-label="add to favorites" sx={{
+                                                transition: "transform 0.3s ease-in-out",
+                                                "&:hover": {
+                                                    transform: "scale(1.2)",
+                                                },
                                             }}>
-                                                <IconButton aria-label="add to favorites"  >
-                                                    <Checkbox
-                                                        inputProps={{ "aria-label": "Favorite" }}
-                                                        icon={<FavoriteBorder />}
-                                                        checkedIcon={<Favorite color="secondary" />}
-                                                        onClick={() => fav(response)}
-                                                    />
-                                                </IconButton>
-                                            </CardActions>
+                                                <Checkbox
+                                                    inputProps={{ "aria-label": "Favorite" }}
+                                                    onClick={() => fav(response)}
+                                                    icon={<FavoriteBorder />}
+                                                    checkedIcon={<Favorite color="secondary" />}
+                                                />
+                                            </IconButton>
+
+                                        </CardActions>
                                         </Card>
                                         <br />
 

@@ -22,7 +22,6 @@ import Link from "next/link";
 const HomeCard1 = () => {
     const [card, setCard] = useState([]);
     const [loading, setLoading] = useState(true);
-    const router = useRouter();
     const dispatch = useDispatch()
     function fav(item) {
         dispatch(addToFavouriteItem(item));

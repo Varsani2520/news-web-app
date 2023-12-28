@@ -23,16 +23,16 @@ import { useDispatch, useSelector } from "react-redux";
 import toast, { Toaster } from "react-hot-toast";
 import { addToFavouriteItem } from "@/app/action/action";
 import slugify from "slugify";
+import Link from "next/link";
+import Head from "next/head";
+
 
 const CategoryPage = () => {
-  const router = useRouter();
+   
   const { category } = useParams();
   const [loading, setLoading] = useState(true);
   const [cardsData, setCardsData] = useState([]);
   const dispatch = useDispatch();
-  const user = useSelector(
-    (state) => state.user.user && state.user.user.isAuthenticated
-  );
   function fav(item) {
     dispatch(addToFavouriteItem(item));
     toast.success("Added to wishlist  successfully");
@@ -54,13 +54,11 @@ const CategoryPage = () => {
   }, [category]);
   const handleCardClick = (card) => {
     localStorage.setItem("clickedCard", JSON.stringify(card));
-
-    router.push(`/category/${category}/${slugify(card.title)}`);
   };
   return (
     <Container maxWidth="xl" sx={{ mt: { xs: "25%", md: "15%", lg: "10%" } }}>
       <Toaster />
-      <Grid container spacing={2}>
+      <Typography variant="h2">{category}</Typography>      <Grid container spacing={2}>
         {loading
           ? Array.from({ length: 6 }).map((_, index) => (
               <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
@@ -81,6 +79,7 @@ const CategoryPage = () => {
             ))
           : cardsData.map((card) => (
               <Grid item xs={12} sm={6} md={6} lg={4} key={card.id}>
+                
                 <Card
                   sx={{
                     maxWidth: "100%",
@@ -96,6 +95,7 @@ const CategoryPage = () => {
                     title={card.title}
                     sx={{ background: "#ff2800" }}
                   />
+                  <Link href={`/category/${category}/${slugify(card.title)}`}>
                   <CardMedia
                     component="img"
                     image={card.urlToImage ? card.urlToImage : "/News-logo.jpg"}
@@ -103,6 +103,7 @@ const CategoryPage = () => {
                     sx={{ cursor: "pointer", objectFit: "cover" }}
                     onClick={() => handleCardClick(card)}
                   />
+                  </Link>
                   <CardActions disableSpacing>
                     <IconButton
                       aria-label="add to favorites"

@@ -6,17 +6,34 @@ import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import Box from "@mui/material/Box";
 
-import { Button, Container, Grid, Typography } from "@mui/material";
+import {
+  Button,
+  CardActions,
+  Checkbox,
+  Container,
+  Grid,
+  IconButton,
+  Typography,
+} from "@mui/material";
 import Skeleton from "@mui/material/Skeleton";
 import { useRouter } from "next/navigation";
 
 import { getPopularity } from "../service/getPopularity";
 import slugify from "slugify";
 import Link from "next/link";
+import { Favorite, FavoriteBorder } from "@mui/icons-material";
+import { useDispatch } from "react-redux";
+import { addToFavouriteItem } from "../action/action";
+import toast, { Toaster } from "react-hot-toast";
 const page = () => {
   const [card, setCard] = useState([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const dispatch = useDispatch();
+  function fav(item) {
+    dispatch(addToFavouriteItem(item));
+    toast.success("Added to wishlist  successfully");
+  }
   async function fetchCards() {
     const result = await getPopularity();
     setCard(result.articles);
@@ -30,6 +47,7 @@ const page = () => {
   }, []);
   return (
     <Container maxWidth="xl" sx={{ mt: { xs: "25%", md: "15%", lg: "10%" } }}>
+      <Toaster />
       <Box sx={{ display: "flex" }}>
         <Grid container spacing={2}>
           {loading
@@ -86,6 +104,24 @@ const page = () => {
                           {response.description}
                         </Typography>
                       </CardContent>
+                      <CardActions disableSpacing>
+                        <IconButton
+                          aria-label="add to favorites"
+                          sx={{
+                            transition: "transform 0.3s ease-in-out",
+                            "&:hover": {
+                              transform: "scale(1.2)",
+                            },
+                          }}
+                        >
+                          <Checkbox
+                            inputProps={{ "aria-label": "Favorite" }}
+                            onClick={() => fav(response)}
+                            icon={<FavoriteBorder />}
+                            checkedIcon={<Favorite color="secondary" />}
+                          />
+                        </IconButton>
+                      </CardActions>
                     </Card>
                     <br />
                   </Box>

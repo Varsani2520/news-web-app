@@ -18,6 +18,8 @@ import "swiper/css/scrollbar";
 import { useEffect, useState } from "react";
 import { Container, Skeleton } from "@mui/material";
 import { getHeadlines } from "../service/getHeadlines";
+import Link from "next/link";
+import slugify from "slugify";
 const HomeSwiper = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -31,7 +33,10 @@ const HomeSwiper = () => {
       console.error("error", error);
     }
   }
+  const handleCardClick = (response) => {
+    localStorage.setItem("selectedCardData", JSON.stringify(response));
 
+  };
   useEffect(() => {
     homeSwiper();
   }, []);
@@ -42,7 +47,6 @@ const HomeSwiper = () => {
           {loading ? (
             <Skeleton height={500} width={'100%'} />
           ) : (
-
             <Swiper
               className="w-full mt-10 justify-center "
               modules={[Navigation, Scrollbar, A11y, Autoplay]}
@@ -55,15 +59,18 @@ const HomeSwiper = () => {
                 <SwiperSlide key={index}>
                   {/* Render your content for each article here */}
                   <div>
-                    <img
-                      src={article.urlToImage} //
-                      alt={article.title}
-                      style={{
-                        objectFit: "cover",
-                        height: "100%",
-                        width: "100%",
-                      }}
-                    />
+                    <Link href={`/top-headlines/${slugify(article.title)}`} passHref>
+                      <img
+                        src={article.urlToImage ? article.urlToImage : '/News-logo.jpg'} //
+                        alt={article.title}
+                        style={{
+                          objectFit: "cover",
+                          height: "100%",
+                          width: "100%", cursor: 'pointer'
+                        }}
+                        onClick={() => handleCardClick(article)}
+                      />
+                    </Link>
                   </div>
                 </SwiperSlide>
               ))}

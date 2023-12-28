@@ -44,8 +44,8 @@ const Likes = () => {
                                         </CardMedia>
                                         <CardContent>
                                             <Typography variant="h5">{singleFav.title}</Typography>
-                                            <Typography>Rating: {singleFav.rating}</Typography>
-                                            <Typography>Price: {singleFav.price}</Typography>
+                                            <Typography>Author: {singleFav.author}</Typography>
+                                            <Typography>Published at: {singleFav.publishedAt}</Typography>
                                             <Button onClick={() => rmv(singleFav)}>Remove</Button>
                                         </CardContent>
                                     </Card>
