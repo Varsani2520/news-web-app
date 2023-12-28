@@ -25,9 +25,6 @@ import GoogleIcon from "@mui/icons-material/Google";
 import "react-phone-input-2/lib/style.css";
 import PhoneInput from "react-phone-input-2";
 import PhoneOtp from "./PhoneOtp";
-import { RecaptchaVerifier, getAuth, signInWithPhoneNumber } from "firebase/auth";
-import { auth } from "../firebase";
-import toast, { Toaster } from "react-hot-toast";
 
 
 const pages = [
@@ -103,18 +100,19 @@ function Navbar() {
         onCaptchVerify();
 
         const appVerifier = window.recaptchaVerifier;
+
         const formatPh = "+" + ph;
         console.log("pghone", formatPh);
 
-        setOtpModel(true);
+        // if appverifier is done -> send otp to particular number
         signInWithPhoneNumber(auth, formatPh, appVerifier)
             .then((confirmationResult) => {
-                toast.success("OTP sended successfully!");
                 window.confirmationResult = confirmationResult;
+                toast.success("OTP sended successfully!");
                 setOpen(false);
                 setLoading(false);
                 setSignupLoading(false);
-
+                setOtpModel(true);
             })
             .catch((error) => {
                 console.log("error in sending otp", error);
@@ -126,7 +124,7 @@ function Navbar() {
         if (!window.recaptchaVerifier) {
             window.recaptchaVerifier = new RecaptchaVerifier(
                 auth,
-                "recapture",
+                "recaptcha-container",
                 {
                     size: "invisible",
                     callback: (response) => {
@@ -199,8 +197,6 @@ function Navbar() {
             }}
         >
             <Container maxWidth="xl">
-                <Toaster />
-
                 <Toolbar disableGutters>
                     {/* <img src="/News-logo.jpg" style={{ height: '100px', width: '170px' }} /> */}
 
@@ -304,20 +300,27 @@ function Navbar() {
                                             onChange={(e) =>
                                                 setUserDetails({ ...users, email: e.target.value })
                                             }
-                                            fullWidth
-                                            variant="outlined"
-                                            margin="normal"
+                                             fullWidth
+    variant="outlined"
+    margin="normal"
+    label="Enter your email"
+    InputLabelProps={{
+        shrink: true,
+    }}
                                         />
                                         <TextField
                                             value={users.password}
                                             onChange={(e) =>
                                                 setUserDetails({ ...users, password: e.target.value })
                                             }
-                                            fullWidth
-
-                                            type="password"
-                                            variant="outlined"
-                                            margin="normal"
+                                             fullWidth
+    variant="outlined"
+    margin="normal"
+    label="Enter your password"
+    type="password"
+    InputLabelProps={{
+        shrink: true,
+    }}
                                         />
                                         <PhoneInput
                                             country={"in"}
@@ -338,8 +341,8 @@ function Navbar() {
                                             })}
                                         >
                                             sign up
-                                        </Button>
-                                        <div id="recapture">
+                                        </Button> or 
+                                        <div id="recaptcha-container">
 
                                         </div>
 
