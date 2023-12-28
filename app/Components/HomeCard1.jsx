@@ -6,22 +6,31 @@ import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import Box from "@mui/material/Box";
-import { Container, Grid, Typography } from "@mui/material";
+import { CardActions, Container, Grid, IconButton, Typography } from "@mui/material";
+import Checkbox from "@mui/material/Checkbox";
+import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
+import Favorite from "@mui/icons-material/Favorite";
 import Skeleton from "@mui/material/Skeleton";
-import { useRouter } from "next/navigation"; // Import useRouter instead of next/navigation
+import { useRouter } from "next/navigation";
 import { getHeadlines } from "../service/getHeadlines";
+import { useDispatch, useSelector } from "react-redux";
+import { addToFavouriteItem } from "../action/action";
+import toast, { Toaster } from "react-hot-toast";
+import slugify from "slugify";
 
 const HomeCard1 = () => {
     const [card, setCard] = useState([]);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
+    const dispatch = useDispatch()
+    function fav(item) {
+        dispatch(addToFavouriteItem(item));
+        toast.success("Added to wishlist  successfully");
 
+    }
     const handleCardClick = (response) => {
-        // Store data in local storage
         localStorage.setItem("selectedCardData", JSON.stringify(response));
-
-        // Navigate to the new page
-        router.push(`/top-headlines/${response.title}`);
+        router.push(`/top-headlines/${slugify(response.title)}`);
     };
 
     async function fetchCards() {
@@ -36,6 +45,7 @@ const HomeCard1 = () => {
 
     return (
         <Container maxWidth="xl">
+            <Toaster />
             <Box sx={{ display: "flex" }}>
                 <Grid container spacing={2}>
                     {loading
@@ -70,6 +80,7 @@ const HomeCard1 = () => {
                                             },
                                         }}
                                     >
+
                                         <CardHeader
                                             title={response.title}
                                             sx={{ background: "#d4d5ee" }}
@@ -79,13 +90,26 @@ const HomeCard1 = () => {
                                             image={response.urlToImage ? response.urlToImage : "/News-logo.jpg"}
                                             alt={response.alt}
                                             sx={{ cursor: "pointer", objectFit: 'cover' }}
-                                            onClick={() => handleCardClick(response)} // Call handleCardClick on click
+                                            onClick={() => handleCardClick(response)}
                                         />
-                                        <CardContent>
-                                            <Typography variant="body2" color="text.secondary">
-                                                {response.description}
-                                            </Typography>
-                                        </CardContent>
+                                        <CardActions disableSpacing>
+                                            <IconButton aria-label="add to favorites" sx={{
+                                                transition: "transform 0.3s ease-in-out",
+                                                "&:hover": {
+                                                    transform: "scale(1.2)",
+                                                },
+                                            }}>
+                                                <Checkbox
+                                                    inputProps={{ "aria-label": "Favorite" }}
+                                                    onClick={() => fav(response)}
+                                                    icon={<FavoriteBorder />}
+                                                    checkedIcon={<Favorite color="secondary" />}
+                                                />
+                                            </IconButton>
+
+                                        </CardActions>
+
+
                                     </Card>
                                     <br />
                                 </Box>

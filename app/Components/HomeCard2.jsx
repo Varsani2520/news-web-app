@@ -43,26 +43,26 @@ const HomeCard2 = ({ categories }) => {
           <Grid container spacing={2}>
             {loading
               ? Array.from({ length: 8 }).map((_, index) => (
-                  <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
-                    <Box>
-                      <Card sx={{ maxWidth: 345 }}>
-                        <Skeleton
-                          variant="rectangular"
-                          height={194}
-                          animation="wave"
-                        />
-                        <CardContent>
-                          <Skeleton animation="wave" />
-                        </CardContent>
-                      </Card>
-                      <br />
-                    </Box>
-                  </Grid>
-                ))
+                <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
+                  <Box>
+                    <Card sx={{ maxWidth: 345 }}>
+                      <Skeleton
+                        variant="rectangular"
+                        height={194}
+                        animation="wave"
+                      />
+                      <CardContent>
+                        <Skeleton animation="wave" />
+                      </CardContent>
+                    </Card>
+                    <br />
+                  </Box>
+                </Grid>
+              ))
               : categories.map((category) => (
-                  <Grid item xs={12} sm={6} md={6} lg={4} key={category}>
-                    <Box>
-                      <Link href={`/category/${category}`} passHref>
+                <Grid item xs={12} sm={6} md={6} lg={4} key={category}>
+                  <Box>
+                    <Link href={`/category/${category}`} passHref>
                       <Card
                         sx={{
                           maxWidth: "100%",
@@ -93,22 +93,15 @@ const HomeCard2 = ({ categories }) => {
                                 objectFit: "cover",
                               }}
                             />
-                            <CardContent>
-                              <Typography
-                                variant="body2"
-                                color="text.secondary"
-                              >
-                                {cardsData[category][0].description}
-                              </Typography>
-                            </CardContent>
+
                           </div>
                         )}
                       </Card>
                       <br />
-                      </Link>
-                    </Box>
-                  </Grid>
-                ))}
+                    </Link>
+                  </Box>
+                </Grid>
+              ))}
           </Grid>
         </Box>
       </Container>

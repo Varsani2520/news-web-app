@@ -1,8 +1,9 @@
 "use client";
 
+import { Container } from "@mui/material";
 import Footer from "./Components/Footer";
 import Navbar from "./Components/Navbar";
-import { AuthContextProvider } from "./context/AuthContext";
+import { StoreProvider } from "./storeProvider";
 import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -15,13 +16,14 @@ const inter = Inter({ subsets: ["latin"] });
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <AuthContextProvider>
+      <body>
+        <StoreProvider>
           <Navbar />
-
-          {children}
+          <div className="mt-20">
+            <Container maxWidth="xl">{children}</Container>
+          </div>
           <Footer />
-        </AuthContextProvider>
+        </StoreProvider>
       </body>
     </html>
   );

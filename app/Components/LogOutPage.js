@@ -8,11 +8,13 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { UserAuth } from "../context/AuthContext";
-
+import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../action/action";
 const LogOutPage = () => {
   const [open, setOpen] = useState(false);
-
+  const dispatch = useDispatch(); // Get the dispatch function
+  const router = useRouter();
   const handleOpen = () => {
     setOpen(true);
   };
@@ -20,13 +22,15 @@ const LogOutPage = () => {
   const handleClose = () => {
     setOpen(false);
   };
-  const { user, logOut } = UserAuth();
-
+  const user = useSelector((state) => state.user.user);
   console.log(user);
   const [loading, setLoading] = React.useState(true);
   const handleSignOut = async () => {
     try {
-      await logOut();
+      // await logout();
+      dispatch(logoutUser());
+      Cookies.set("login", false);
+      router.push("/");
     } catch (error) {
       console.log(error);
     }

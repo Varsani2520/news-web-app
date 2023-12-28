@@ -6,22 +6,18 @@ import Button from "@mui/material/Button";
 import { Box, Grid } from "@mui/material";
 
 import Link from "next/link";
-import {  UserAuth } from "../context/AuthContext";
+import { UserAuth, handleSignIn } from "../context/AuthContext";
 import Lottie from "lottie-react";
 import loginAnimation from "../lottie-animation/loginAnimation.json";
+import { loginUser } from "../action/action";
+import { useDispatch, useSelector } from "react-redux";
 const LoginPage = () => {
-  const { user, googleSignIn } = UserAuth();
-  
+  const user = useSelector((state) => state.user.user && state.user.user.isAuthenticated);
+
+
   console.log(user);
+  const dispatch = useDispatch();
   const [loading, setLoading] = React.useState(true);
-  const handleSignIn = async () => {
-    try {
-      await googleSignIn();
-      
-    } catch (error) {
-      console.log(error);
-    }
-  };
   React.useEffect(() => {
     const checkAuthentication = async () => {
       await new Promise((resolve) => setTimeout(resolve, 50));
@@ -69,7 +65,10 @@ const LoginPage = () => {
               <Link href="/pages/signup">Sign up</Link>
             </form>
             {loading ? null : !user ? (
-              <Button variant="contained" onClick={handleSignIn}>
+              <Button
+                variant="contained"
+                onClick={() => handleSignIn({ dispatch })}
+              >
                 Login with google
               </Button>
             ) : (

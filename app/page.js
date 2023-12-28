@@ -17,6 +17,8 @@ export default function Home() {
   ];
 
   return (
+    <div sx={{mt:'50%'}}>
+
     <Container maxWidth="xl">
       <HomeSwiper />
       <Divider1 text="Top Headlines" />
@@ -26,5 +28,6 @@ export default function Home() {
       <Divider1 text="Trending Stories" />
       <HomeCard3 />
     </Container>
+    </div>
   );
 }

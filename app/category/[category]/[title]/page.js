@@ -31,6 +31,17 @@ const Page = () => {
     <Container maxWidth="xl" sx={{ mt: "20px" }}>
       {parsedData && (
         <Card sx={{ maxWidth: 1000, margin: "auto" }}>
+           <IconButton
+            sx={{
+              position: "absolute",
+              top: 0,
+              right: 0,
+              color: "red", // You can customize the color
+              backgroundColor: "white", // Background color if needed
+            }}
+          >
+            <FavoriteIcon />
+          </IconButton>
           <CardMedia
             component="img"
             alt={parsedData.title}
@@ -42,18 +53,7 @@ const Page = () => {
             }}
             image={parsedData.urlToImage || "/default-image.jpg"}
           >
-            {/* Like icon in the top-right corner */}
-            <IconButton
-              sx={{
-                position: "absolute",
-                top: 0,
-                right: 0,
-                color: "red", // You can customize the color
-                backgroundColor: "white", // Background color if needed
-              }}
-            >
-              <FavoriteIcon />
-            </IconButton>
+            
           </CardMedia>
           <CardContent>
             <Typography variant="h4">{parsedData.title}</Typography>

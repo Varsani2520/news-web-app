@@ -3,24 +3,40 @@ import { getCategoryNews } from "@/app/service/getCategory";
 import {
   Box,
   Card,
+  CardActions,
   CardContent,
   CardHeader,
   CardMedia,
+  Checkbox,
   Container,
   Grid,
+  IconButton,
   Skeleton,
   Typography,
 } from "@mui/material";
-// pages/category/[category].js
+import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
+import Favorite from "@mui/icons-material/Favorite";
+// pages/category/[category].js`
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import toast, { Toaster } from "react-hot-toast";
+import { addToFavouriteItem } from "@/app/action/action";
+import slugify from "slugify";
 
 const CategoryPage = () => {
   const router = useRouter();
   const { category } = useParams();
   const [loading, setLoading] = useState(true);
   const [cardsData, setCardsData] = useState([]);
-
+  const dispatch = useDispatch();
+  const user = useSelector(
+    (state) => state.user.user && state.user.user.isAuthenticated
+  );
+  function fav(item) {
+    dispatch(addToFavouriteItem(item));
+    toast.success("Added to wishlist  successfully");
+  }
   useEffect(() => {
     const fetchCategoryNews = async () => {
       try {
@@ -39,10 +55,11 @@ const CategoryPage = () => {
   const handleCardClick = (card) => {
     localStorage.setItem("clickedCard", JSON.stringify(card));
 
-    router.push(`/category/${category}/${encodeURIComponent(card.title)}`);
+    router.push(`/category/${category}/${slugify(card.title)}`);
   };
   return (
     <Container maxWidth="xl">
+      <Toaster />
       <Grid container spacing={2}>
         {loading
           ? Array.from({ length: 6 }).map((_, index) => (
@@ -86,11 +103,24 @@ const CategoryPage = () => {
                     sx={{ cursor: "pointer", objectFit: "cover" }}
                     onClick={() => handleCardClick(card)}
                   />
-                  <CardContent>
-                    <Typography variant="body2" color="text.secondary">
-                      {card.description}
-                    </Typography>
-                  </CardContent>
+                  <CardActions disableSpacing>
+                    <IconButton
+                      aria-label="add to favorites"
+                      sx={{
+                        transition: "transform 0.3s ease-in-out",
+                        "&:hover": {
+                          transform: "scale(1.2)",
+                        },
+                      }}
+                    >
+                      <Checkbox
+                        onClick={() => fav(card)}
+                        inputProps={{ "aria-label": "Favorite" }}
+                        icon={<FavoriteBorder />}
+                        checkedIcon={<Favorite color="secondary" />}
+                      />
+                    </IconButton>
+                  </CardActions>
                 </Card>
                 <br />
               </Grid>

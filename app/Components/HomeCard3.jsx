@@ -5,23 +5,34 @@ import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import Box from "@mui/material/Box";
-
-import { Button, Container, Grid, Typography } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { addToFavouriteItem, favourite } from "../action/action";
+import { Button, CardActions, Container, Grid, IconButton, Typography } from "@mui/material";
 import Skeleton from "@mui/material/Skeleton";
 import { useRouter } from "next/navigation";
-
+import Checkbox from "@mui/material/Checkbox";
+import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
+import Favorite from "@mui/icons-material/Favorite";
 import { getPopularity } from "../service/getPopularity";
+import toast, { Toaster } from "react-hot-toast";
+import slugify from "slugify";
 const HomeCard3 = () => {
     const [card, setCard] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showAll, setShowAll] = useState(false);
     const router = useRouter();
+    const dispatch = useDispatch()
     async function fetchCards() {
         const result = await getPopularity();
         setCard(result.articles);
         setLoading(false);
     }
+    function fav(item) {
 
+        dispatch(addToFavouriteItem(item));
+        toast.success("Added to wishlist  successfully");
+
+    }
     const handleViewMore = () => {
         router.push("/top-trending")
         setShowAll(true);
@@ -31,11 +42,12 @@ const HomeCard3 = () => {
     }, []);
     const handleCardClick = (response) => {
         localStorage.setItem("clickedCard", JSON.stringify(response))
-        router.push(`/top-trending/${encodeURIComponent(response.title)}`)
+        router.push(`/top-trending/${slugify(response.title)}`)
     }
     return (
         <>
             <Container maxWidth="xl">
+                <Toaster />
                 <Box sx={{ display: "flex" }}>
                     <Grid container spacing={2}>
                         {loading
@@ -81,12 +93,21 @@ const HomeCard3 = () => {
                                                 sx={{ cursor: "pointer", objectFit: 'cover' }}
                                                 onClick={() => handleCardClick(response)}
                                             />
-                                            <CardContent>
-                                                <Typography variant="body2" color="text.secondary">
-                                                    {response.description}
-                                                </Typography>
-                                            </CardContent>
-
+                                            <CardActions  sx={{
+                                                position: 'absolute',
+                                                right: 0,
+                                                top: 0,
+                                                backgroundColor: 'transparent',
+                                            }}>
+                                                <IconButton aria-label="add to favorites"  >
+                                                    <Checkbox
+                                                        inputProps={{ "aria-label": "Favorite" }}
+                                                        icon={<FavoriteBorder />}
+                                                        checkedIcon={<Favorite color="secondary" />}
+                                                        onClick={() => fav(response)}
+                                                    />
+                                                </IconButton>
+                                            </CardActions>
                                         </Card>
                                         <br />
                                     </Box>

@@ -11,15 +11,20 @@ import Skeleton from "@mui/material/Skeleton";
 import { useRouter } from "next/navigation";
 
 import { getPopularity } from "../service/getPopularity";
+import slugify from "slugify";
 const page = () => {
   const [card, setCard] = useState([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
   async function fetchCards() {
     const result = await getPopularity();
     setCard(result.articles);
     setLoading(false);
   }
-
+  const handleCardClick = (response) => {
+    localStorage.setItem("clickedCard", JSON.stringify(response));
+    router.push(`/top-trending/${slugify(response.title)}`)
+  };
   useEffect(() => {
     fetchCards();
   }, []);
@@ -86,7 +91,6 @@ const page = () => {
               ))}
         </Grid>
       </Box>
-      
     </Container>
   );
 };

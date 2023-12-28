@@ -10,16 +10,18 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import Link from "next/link";
-import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
-import PersonAdd from '@mui/icons-material/PersonAdd';
-import Settings from '@mui/icons-material/Settings';
-import Logout from '@mui/icons-material/Logout';
-import { Badge, Divider, ListItemIcon, TextField } from "@mui/material";
-import { styled } from '@mui/material/styles';
-import { UserAuth } from "../context/AuthContext";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import { handleSignIn } from "../context/AuthContext";
+import { TextField } from "@mui/material";
+import PhoneIcon from "@mui/icons-material/Phone";
+import GoogleIcon from "@mui/icons-material/Google";
 
 
 const pages = [
@@ -33,23 +35,15 @@ const pages = [
     { label: "Health", href: "/category/health" },
     { label: "Trending", href: "/top-trending" },
 ];
-const settings = [
-    { label: "Profile", href: "/pages/profile", icon: <Avatar /> },
-    { label: "My account", href: "/pages/account" },
-    {
-        label: "Settings", href: "/pages/settings", icon: <ListItemIcon>
-            <Settings fontSize="small" />
-        </ListItemIcon>
-    },
-    {
-        label: "Logout", href: "/pages/logout", icon: <ListItemIcon>
-            <Logout fontSize="small" />
-        </ListItemIcon>
-    }];
+
 
 function Navbar() {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const [openSignUpModal, setOpenSignUpModal] = React.useState(false);
+
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -65,33 +59,63 @@ function Navbar() {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const open = Boolean(anchorEl);
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
-    const StyledBadge = styled(Badge)(({ theme }) => ({
-        '& .MuiBadge-badge': {
-            right: -3,
-            top: 13,
-            border: `2px solid ${theme.palette.background.paper}`,
-            padding: '0 4px',
-        },
-    }));
-    const { user } = UserAuth();
 
+    const handleOpenSignUpModal = () => {
+        setOpenSignUpModal(true);
+    };
+
+    const handleCloseSignUpModal = () => {
+        setOpenSignUpModal(false);
+    };
+
+    const dispatch = useDispatch()
     const [loading, setLoading] = React.useState(true);
 
+    const router = useRouter();
+    const authenticated = useSelector((state) => state.user.user && state.user.user.isAuthenticated);
+    const user = authenticated ? useSelector((state) => state.user.user.url) : ""
+
+    // const [searchQuery, setSearchQuery] = React.useState("");
+    
+    // const handleSearch = async () => {
+    //     if (!searchQuery.trim()) {
+    //         console.error("Search query is empty.");
+    //         return;
+    //     }
+    //     console.log("Search Query:", searchQuery);
+    //     const apiKey = '69f2b0c4d53e40099e654bc7119426ac';
+    //     const apiUrl = `https://newsapi.org/v2/everything?q=${searchQuery}&apiKey=${apiKey}`;
+
+    //     try {
+    //         const response = await fetch(apiUrl);
+    //         const data = await response.json();
+
+    //         console.log("News Data:", data);
+
+    //         router.push({
+    //             pathname: '/search', // Change 'search' to the desired path for displaying search results
+    //             query: { q: searchQuery }, // Pass the search query as a parameter
+    //         });
+    //     } catch (error) {
+    //         console.error("Error fetching news data:", error);
+    //     }
+    // };
+
+    // const handleSearchInputChange = (event) => {
+    //     setSearchQuery(event.target.value);
+    // };
     React.useEffect(() => {
         const checkAuthentication = async () => {
-            await new Promise((resolve) => setTimeout(resolve, 50));
+          await new Promise((resolve) => setTimeout(resolve, 70));
+    
+          if (!authenticated) {
             setLoading(false);
+          }
         };
+    
         checkAuthentication();
-    }, [user]);
+      }, [authenticated]);
+    
     return (
         <AppBar
             position="fixed"
@@ -103,7 +127,9 @@ function Navbar() {
         >
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    <img src="/News-logo.jpg" style={{ height: '100px', width: '170px' }} />
+                    {/* <img src="/News-logo.jpg" style={{ height: '100px', width: '170px' }} /> */}
+
+
                     <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
                         <IconButton
                             size="large"
@@ -116,51 +142,35 @@ function Navbar() {
                             <MenuIcon />
                         </IconButton>
                         <Menu
-                            anchorEl={anchorEl}
-                            id="account-menu"
-                            open={open}
-                            onClose={handleClose}
-                            onClick={handleClose}
-                            PaperProps={{
-                                elevation: 0,
-                                sx: {
-                                    overflow: 'visible',
-                                    filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                                    mt: 1.5,
-                                    '& .MuiAvatar-root': {
-                                        width: 32,
-                                        height: 32,
-                                        ml: -0.5,
-                                        mr: 1,
-                                    },
-                                    '&:before': {
-                                        content: '""',
-                                        display: 'block',
-                                        position: 'absolute',
-                                        top: 0,
-                                        right: 14,
-                                        width: 10,
-                                        height: 10,
-                                        bgcolor: 'background.paper',
-                                        transform: 'translateY(-50%) rotate(45deg)',
-                                        zIndex: 0,
-                                    },
-                                },
+                            id="menu-appbar"
+                            anchorEl={anchorElNav}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
                             }}
-                            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }} sx={{ xs: 'block', md: 'none' }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'left',
+                            }}
+                            open={Boolean(anchorElNav)}
+                            onClose={handleCloseNavMenu}
+                            sx={{
+                                display: { xs: 'block', md: 'none' },
+                            }}
+
                         >
                             {pages.map((page) => (
-                                <MenuItem key={page.label} onClick={handleClose}>
+                                <MenuItem key={page} onClick={handleCloseNavMenu}>
                                     <Link href={page.href} style={{ textDecoration: "none" }}>
-                                        <Typography textAlign="center">{page.label}</Typography>
+                                        <Typography textAlign="center" sx={{ cursor: 'pointer' }}>{page.label}</Typography>
                                     </Link>
                                 </MenuItem>
                             ))}
                         </Menu>
                     </Box>
 
-
+                    <img src="/News-logo.jpg" style={{ height: '100px', width: '170px' }} />
                     <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
                         {pages.map((page) => (
                             <Link
@@ -180,88 +190,94 @@ function Navbar() {
                     </Box>
                     {/* searchbar */}
                     <Box sx={{ flexGrow: 1, display: "flex", marginLeft: "auto", marginRight: 2 }}>
-            <TextField
-              
-              variant="outlined"
-              size="large"
-              placeholder="Search for news..."
-              InputProps={{
-                endAdornment: (
-                  <IconButton size="small" color="primary" aria-label="search">
-                    {/* You can replace the following placeholder with an actual search icon */}
-                    🔍
-                  </IconButton>
-                )
-              }}
-            />
-          </Box>
+                        {/* <TextField
+
+                            variant="outlined"
+                            size="large"
+                            placeholder="Search for news..."
+                            InputProps={{
+                                endAdornment: (
+                                    <IconButton size="small" color="primary" aria-label="search" onClick={handleSearch}>
+
+                                        🔍
+                                    </IconButton>
+                                )
+                            }}
+                            onChange={handleSearchInputChange}
+                        /> */}
+                    </Box>
                     <Box sx={{ flexGrow: 0 }}>
-
-                        {loading ? null : !user ? (
+                        { !user ? (
                             <>
-                                <Link href="/pages/signup" passHref>
-                                    <Button component="a" variant="contained" sx={{ marginRight: 2 }} >Sign up</Button>
-                                </Link>
-                                <Link href="pages/login" passHref>
-                                    <Button component="a" variant="contained" sx={{ marginRight: 2 }} >Login</Button>
-                                </Link>
+                                <Button
+                                    component="a"
+                                    variant="contained"
+                                    sx={{ marginRight: 2 }}
+                                    onClick={handleOpenSignUpModal}
+                                >
+                                    Sign up
+                                </Button>
+                                <Dialog
+                                    open={openSignUpModal}
+                                    onClose={handleCloseSignUpModal}
+                                    aria-labelledby="form-dialog-title"
+                                >
+                                    <DialogTitle id="form-dialog-title">Sign up</DialogTitle>
+                                    <DialogContent>
+                                        <TextField
+
+                                            fullWidth
+                                            variant="outlined"
+                                            margin="normal"
+                                        />
+                                        <TextField
+
+                                            fullWidth
+
+                                            type="password"
+                                            variant="outlined"
+                                            margin="normal"
+                                        />
+                                        <Button variant="contained"
+                                            startIcon={<PhoneIcon />}
+                                            sx={{ marginRight: 1 }}
+                                        >
+                                            Phone
+                                        </Button>
+                                       
+
+                                        <Button variant="contained"
+                                            startIcon={<GoogleIcon />}
+                                            onClick={() => handleSignIn(dispatch)}
+                                        >
+                                            Google
+                                        </Button>
+                                            
+                                        
+
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button onClick={handleCloseSignUpModal} color="primary">
+                                            Cancel
+                                        </Button>
+
+                                    </DialogActions>
+                                </Dialog>
                             </>
-
-
                         ) : (
                             <div>
-                                <IconButton
-                                    color="primary"
-                                    aria-label="add to shopping cart"
-                                    href="/pages/profile/favourites"
-                                    sx={{ marginRight: 2 }}
-                                >
-                                    <StyledBadge badgeContent="1" color="secondary">
-                                        <FavoriteBorderOutlinedIcon />
-                                    </StyledBadge>
-                                </IconButton>
-
-                                <Tooltip title="Open settings" >
-                                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }} size="small"
-
-                                        aria-controls={open ? 'account-menu' : undefined}
-                                        aria-haspopup="true"
-                                        aria-expanded={open ? 'true' : undefined}>
-                                        <Avatar src={user.photoURL} />
+                                <Link href="/pages/profile">
+                                    <IconButton sx={{ p: 0 }} size="small"
+                                    >
+                                        <Avatar src={user} />
                                     </IconButton>
-                                </Tooltip>
+                                </Link>
                             </div>
                         )}
-                        <Menu
-                            sx={{ mt: "45px" }}
-                            id="menu-appbar"
-                            anchorEl={anchorElUser}
-                            anchorOrigin={{
-                                vertical: "top",
-                                horizontal: "right",
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: "top",
-                                horizontal: "right",
-                            }}
-                            open={Boolean(anchorElUser)}
-                            onClose={handleCloseUserMenu}
-                        >
-                            {settings.map((setting) => (
-                                <div key={setting.label}>
-
-                                    <MenuItem key={setting.label} onClick={handleClose}><Link href={setting.href}>
-                                        <Avatar >{setting.icon}</Avatar>
-                                        <Typography>{setting.label}</Typography></Link>
-                                    </MenuItem>
-                                </div>
-                            ))}
-                        </Menu>
                     </Box>
                 </Toolbar>
             </Container>
-        </AppBar>
+        </AppBar >
     );
 }
 
