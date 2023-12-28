@@ -4,9 +4,7 @@ import { Container } from "@mui/material";
 import Footer from "./Components/Footer";
 import Navbar from "./Components/Navbar";
 import { StoreProvider } from "./storeProvider";
-import { Inter } from "next/font/google";
 
-const inter = Inter({ subsets: ["latin"] });
 
 // export const metadata = {
 //   title: "Create Next App",
