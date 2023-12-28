@@ -106,7 +106,7 @@ function Navbar() {
     // };
     React.useEffect(() => {
         const checkAuthentication = async () => {
-          await new Promise((resolve) => setTimeout(resolve, 70));
+          await new Promise((resolve) => setTimeout(resolve, 50));
     
           if (!authenticated) {
             setLoading(false);
