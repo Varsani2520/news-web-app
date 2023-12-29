@@ -7,6 +7,7 @@ import HomeCard3 from "./Components/HomeCard3";
 
 export default function Home() {
   const categories = [
+    
     "business",
     "sports",
     "technology",

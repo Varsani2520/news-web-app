@@ -25,6 +25,9 @@ import GoogleIcon from "@mui/icons-material/Google";
 import "react-phone-input-2/lib/style.css";
 import PhoneInput from "react-phone-input-2";
 import PhoneOtp from "./PhoneOtp";
+import { RecaptchaVerifier, getAuth, signInWithPhoneNumber } from "firebase/auth";
+import { auth } from "../firebase";
+import toast, { Toaster } from "react-hot-toast";
 
 
 const pages = [
@@ -44,9 +47,6 @@ function Navbar() {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const [openSignUpModal, setOpenSignUpModal] = React.useState(false);
-
-    const [anchorEl, setAnchorEl] = React.useState(null);
-
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -75,28 +75,28 @@ function Navbar() {
     const [loading, setLoading] = React.useState(true);
 
     const router = useRouter();
-    const authenticated = useSelector((state) => state.user.isAuthenticated);
-    const user = authenticated ? useSelector((state) => state.user.user.url) : "/News-logo.jpg"
-    console.log(user)
+    const user = useSelector((state) => state.user)
+    const isAuthenticated = useSelector((state) => state.user.isAuthenticated)
+    const userImage = user.isAuthenticated ? user.user.url : "";
     const [users, setUserDetails] = React.useState({
-        email: "", password: ''
+        name: '',
+        email: '',
+        password: '',
+        url: 'https://www.shutterstock.com/image-vector/user-icon-trendy-flat-style-260nw-418179865.jpg'
     })
     const [otpModel, setOtpModel] = React.useState(false);
     const [ph, setPh] = React.useState("");
-    const [signupLoading, setSignupLoading] = React.useState(false);
     const [open, setOpen] = React.useState(false);
 
     async function onSignup({
         setLoading,
         onCaptchVerify,
-        setSignupLoading,
         setOtpModel,
         setOpen,
         ph,
     }) {
 
-        // setLoading(true);
-        // setSignupLoading(true);
+
         onCaptchVerify();
 
         const appVerifier = window.recaptchaVerifier;
@@ -111,7 +111,7 @@ function Navbar() {
                 toast.success("OTP sended successfully!");
                 setOpen(false);
                 setLoading(false);
-                setSignupLoading(false);
+
                 setOtpModel(true);
             })
             .catch((error) => {
@@ -132,7 +132,7 @@ function Navbar() {
                         onSignup({
                             setLoading,
                             onCaptchVerify,
-                            setSignupLoading,
+
                             setOtpModel,
                             setOpen,
                             ph,
@@ -150,42 +150,41 @@ function Navbar() {
         onSignup(
             setLoading,
             onCaptchVerify,
-            setSignupLoading,
+
             setOtpModel,
             setOpen,
             ph
         );
     }
-    // const [searchQuery, setSearchQuery] = React.useState("");
+    const [searchQuery, setSearchQuery] = React.useState("");
+    const handleSearch = async () => {
+        if (!searchQuery.trim()) {
+            console.error("Search query is empty.");
+            return;
+        }
+        console.log("Search Query:", searchQuery);
+        router.push(`/pages/search/${searchQuery}`);
+        const apiKey = '50c06e8227e6493ca95655b769a50faf';
+        const apiUrl = `https://newsapi.org/v2/everything?q=${searchQuery}&apiKey=${apiKey}`;
 
-    // const handleSearch = async () => {
-    //     if (!searchQuery.trim()) {
-    //         console.error("Search query is empty.");
-    //         return;
-    //     }
-    //     console.log("Search Query:", searchQuery);
-    //     const apiKey = '69f2b0c4d53e40099e654bc7119426ac';
-    //     const apiUrl = `https://newsapi.org/v2/everything?q=${searchQuery}&apiKey=${apiKey}`;
+        try {
+            const response = await fetch(apiUrl);
+            const data = await response.json();
 
-    //     try {
-    //         const response = await fetch(apiUrl);
-    //         const data = await response.json();
+            console.log("News Data:", data);
 
-    //         console.log("News Data:", data);
+            router.push({
+                pathname: '/pages/search', // Change 'search' to the desired path for displaying search results
+                query: { q: searchQuery }, // Pass the search query as a parameter
+            });
+        } catch (error) {
+            console.error("Error fetching news data:", error);
+        }
+    };
 
-    //         router.push({
-    //             pathname: '/search', // Change 'search' to the desired path for displaying search results
-    //             query: { q: searchQuery }, // Pass the search query as a parameter
-    //         });
-    //     } catch (error) {
-    //         console.error("Error fetching news data:", error);
-    //     }
-    // };
-
-    // const handleSearchInputChange = (event) => {
-    //     setSearchQuery(event.target.value);
-    // };
-
+    const handleSearchInputChange = (event) => {
+        setSearchQuery(event.target.value);
+    };
 
     return (
         <AppBar
@@ -196,6 +195,7 @@ function Navbar() {
                 zIndex: 1000
             }}
         >
+            <Toaster />
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
                     {/* <img src="/News-logo.jpg" style={{ height: '100px', width: '170px' }} /> */}
@@ -231,6 +231,7 @@ function Navbar() {
                             }}
 
                         >
+                            <div className="" id="recaptcha-containe"></div>
                             {pages.map((page) => (
                                 <MenuItem key={page} onClick={handleCloseNavMenu}>
                                     <Link href={page.href} style={{ textDecoration: "none" }}>
@@ -261,7 +262,7 @@ function Navbar() {
                     </Box>
                     {/* searchbar */}
                     <Box sx={{ flexGrow: 1, display: "flex", marginLeft: "auto", marginRight: 2 }}>
-                        {/* <TextField
+                        <TextField
 
                             variant="outlined"
                             size="large"
@@ -275,10 +276,15 @@ function Navbar() {
                                 )
                             }}
                             onChange={handleSearchInputChange}
-                        /> */}
+                            onKeyDown={(eveent) => {
+                                if (event.key == 'Enter') {
+                                    handleSearch()
+                                }
+                            }}
+                        />
                     </Box>
                     <Box sx={{ flexGrow: 0 }}>
-                        {!authenticated ? (
+                        {!isAuthenticated ? (
                             <>
                                 <Button
                                     component="a"
@@ -296,31 +302,44 @@ function Navbar() {
                                     <DialogTitle id="form-dialog-title">Sign up</DialogTitle>
                                     <DialogContent>
                                         <TextField
+                                            value={users.name}
+                                            onChange={(e) =>
+                                                setUserDetails({ ...users, name: e.target.value })
+                                            }
+                                            fullWidth
+                                            variant="outlined"
+                                            margin="normal"
+                                            label="Enter your name"
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
+                                        />
+                                        <TextField
                                             value={users.email}
                                             onChange={(e) =>
                                                 setUserDetails({ ...users, email: e.target.value })
                                             }
-                                             fullWidth
-    variant="outlined"
-    margin="normal"
-    label="Enter your email"
-    InputLabelProps={{
-        shrink: true,
-    }}
+                                            fullWidth
+                                            variant="outlined"
+                                            margin="normal"
+                                            label="Enter your email"
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
                                         />
                                         <TextField
                                             value={users.password}
                                             onChange={(e) =>
                                                 setUserDetails({ ...users, password: e.target.value })
                                             }
-                                             fullWidth
-    variant="outlined"
-    margin="normal"
-    label="Enter your password"
-    type="password"
-    InputLabelProps={{
-        shrink: true,
-    }}
+                                            fullWidth
+                                            variant="outlined"
+                                            margin="normal"
+                                            label="Enter your password"
+                                            type="password"
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
                                         />
                                         <PhoneInput
                                             country={"in"}
@@ -341,7 +360,7 @@ function Navbar() {
                                             })}
                                         >
                                             sign up
-                                        </Button> or 
+                                        </Button> or
                                         <div id="recaptcha-container">
 
                                         </div>
@@ -365,7 +384,7 @@ function Navbar() {
                                 <Link href="/pages/profile">
                                     <IconButton sx={{ p: 0 }} size="small"
                                     >
-                                        <Avatar src={user} />
+                                        <Avatar src={userImage ? userImage : ''} />
                                     </IconButton>
                                 </Link>
                             </div>
@@ -376,7 +395,6 @@ function Navbar() {
                     <PhoneOtp
                         user={users}
                         setOpen={setOtpModel}
-                        loading={loading}
                         setLoading={setLoading}
                         phoneNo={ph}
                     />

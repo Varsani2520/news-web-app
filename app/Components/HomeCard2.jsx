@@ -16,24 +16,25 @@ const HomeCard2 = ({ categories }) => {
   const router = useRouter();
   const [cardsData, setCardsData] = useState({});
 
+  const fetchCards = async () => {
+    try {
+      const data = {};
+      await Promise.all(
+        categories.map(async (category) => {
+          const result = await getCategoryNews(category);
+          data[category] = result.articles;
+        })
+      );
+      setCardsData(data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching category news:", error);
+    }
+  };
   useEffect(() => {
-    const fetchCards = async () => {
-      try {
-        const data = {};
-        await Promise.all(
-          categories.map(async (category) => {
-            const result = await getCategoryNews(category);
-            data[category] = result.articles;
-          })
-        );
-        setCardsData(data);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching category news:", error);
-      }
-    };
 
     fetchCards();
+    setLoading(false)
   }, [categories]);
 
   return (
@@ -41,44 +42,26 @@ const HomeCard2 = ({ categories }) => {
       <Container maxWidth="xl">
         <Box sx={{ display: "flex" }}>
           <Grid container spacing={2}>
-            {loading
-              ? Array.from({ length: 8 }).map((_, index) => (
-                <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
-                  <Box>
-                    <Card sx={{ maxWidth: 345 }}>
-                      <Skeleton
-                        variant="rectangular"
-                        height={194}
-                        animation="wave"
-                      />
-                      <CardContent>
-                        <Skeleton animation="wave" />
-                      </CardContent>
-                    </Card>
-                    <br />
-                  </Box>
-                </Grid>
-              ))
-              : categories.map((category) => (
-                <Grid item xs={12} sm={6} md={6} lg={4} key={category}>
-                  <Box>
-
-                    <Card
-                      sx={{
-                        maxWidth: "100%",
-                        transition: "transform 0.3s ease-in-out",
-                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                        "&:hover": {
-                          transform: "scale(1.05)",
-                          boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
-                        },
-                      }}
-                    >
-                      <CardHeader
-                        title={`${category} News`}
-                        sx={{ background: "#ff2800" }}
-                      />
-                      {cardsData[category] && cardsData[category][0] && (
+{categories.map((category) => (
+            <Grid item xs={12} sm={6} md={6} lg={4} key={category}>
+              <Box>
+                <Link href={`category/${category}`}>
+                  <Card
+                    sx={{
+                      maxWidth: "100%",
+                      transition: "transform 0.3s ease-in-out",
+                      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                      "&:hover": {
+                        transform: "scale(1.05)",
+                        boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
+                      },
+                    }}
+                  >
+                    <CardHeader
+                      title={`${category} News`}
+                      sx={{ background: "#ff2800" }}
+                    />
+                    {/* {cardsData[category] && cardsData[category][0] && (
                         <div key={cardsData[category][0].id}>
                           <Link href={`/category/${category}`} passHref>
                             <CardMedia
@@ -96,13 +79,14 @@ const HomeCard2 = ({ categories }) => {
                             />
                           </Link>
                         </div>
-                      )}
-                    </Card>
-                    <br />
+                      )} */}
+                  </Card>
+                  <br />
+                </Link>
 
-                  </Box>
-                </Grid>
-              ))}
+              </Box>
+            </Grid>
+            ))}
           </Grid>
         </Box>
       </Container>

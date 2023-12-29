@@ -25,10 +25,10 @@ import { addToFavouriteItem } from "@/app/action/action";
 import slugify from "slugify";
 import Link from "next/link";
 import Head from "next/head";
-
+import { addDoc, collection, getDocs } from "firebase/firestore";
+import { db } from "@/app/firebase";
 
 const CategoryPage = () => {
-   
   const { category } = useParams();
   const [loading, setLoading] = useState(true);
   const [cardsData, setCardsData] = useState([]);
@@ -37,28 +37,56 @@ const CategoryPage = () => {
     dispatch(addToFavouriteItem(item));
     toast.success("Added to wishlist  successfully");
   }
-  useEffect(() => {
-    const fetchCategoryNews = async () => {
+  const isOnline = navigator.onLine;
+
+  async function fetchCategoryNews() {
+    // if online then get data from api
+    if (isOnline) {
       try {
-        const result = await getCategoryNews(category);
-        setCardsData(result.articles);
+        const cardsData = await getCategoryNews();
+        // store the data in firestore so we got it when user is offline
+        if (card.articles) {
+          try {
+            await Promise.all(
+              cardsData.articles.map(async (article) => {
+                await addDoc(collection(db, "category"), article);
+              })
+            );
+            console.log("cat added to Firestore");
+          } catch (error) {
+            console.log("error in store db", error);
+          }
+        }
+        setCardsData(card.articles);
+        // disable skeleton
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching category news:", error);
+        console.log(error);
       }
-    };
-
-    if (category) {
-      fetchCategoryNews();
     }
-  }, [category]);
+    // if user is offline, then getting data from Firestore
+    else {
+      const querySnapshot = await getDocs(collection(db, "category"));
+      const newCards = [];
+      querySnapshot.forEach((doc) => {
+        console.log(doc.id, " => ", doc.data());
+        newCards.push(doc.data());
+      });
+      setCardsData(newCards);
+      setLoading(false);
+    }
+  }
+  useEffect(() => {
+    fetchCategoryNews();
+  }, []);
   const handleCardClick = (card) => {
     localStorage.setItem("clickedCard", JSON.stringify(card));
   };
   return (
     <Container maxWidth="xl" sx={{ mt: { xs: "25%", md: "15%", lg: "10%" } }}>
       <Toaster />
-      <Typography variant="h2">{category}</Typography>      <Grid container spacing={2}>
+      <Typography variant="h2">{category}</Typography>{" "}
+      <Grid container spacing={2}>
         {loading
           ? Array.from({ length: 6 }).map((_, index) => (
               <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
@@ -79,7 +107,6 @@ const CategoryPage = () => {
             ))
           : cardsData.map((card) => (
               <Grid item xs={12} sm={6} md={6} lg={4} key={card.id}>
-                
                 <Card
                   sx={{
                     maxWidth: "100%",
@@ -96,13 +123,15 @@ const CategoryPage = () => {
                     sx={{ background: "#ff2800" }}
                   />
                   <Link href={`/category/${category}/${slugify(card.title)}`}>
-                  <CardMedia
-                    component="img"
-                    image={card.urlToImage ? card.urlToImage : "/News-logo.jpg"}
-                    alt={card.alt}
-                    sx={{ cursor: "pointer", objectFit: "cover" }}
-                    onClick={() => handleCardClick(card)}
-                  />
+                    <CardMedia
+                      component="img"
+                      image={
+                        card.urlToImage ? card.urlToImage : "/News-logo.jpg"
+                      }
+                      alt={card.alt}
+                      sx={{ cursor: "pointer", objectFit: "cover" }}
+                      onClick={() => handleCardClick(card)}
+                    />
                   </Link>
                   <CardActions disableSpacing>
                     <IconButton

@@ -17,16 +17,53 @@ import { getPopularity } from "../service/getPopularity";
 import toast, { Toaster } from "react-hot-toast";
 import slugify from "slugify";
 import Link from "next/link";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../firebase";
 const HomeCard3 = () => {
     const [card, setCard] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showAll, setShowAll] = useState(false);
+    const isOnline = navigator.onLine;
+
     const router = useRouter();
     const dispatch = useDispatch()
     async function fetchCards() {
-        const result = await getPopularity();
-        setCard(result.articles);
-        setLoading(false);
+        // if online then get data from api
+        if (isOnline) {
+            try {
+                const card = await getPopularity();
+                // store the data in firestore so we got it when user is offline
+                if (card.articles) {
+                    try {
+                        await Promise.all(
+
+                            card.articles.map(async (article) => {
+                                await addDoc(collection(db, "popular"), article);
+                            })
+                        );
+                        console.log("popular added to Firestore");
+                    } catch (error) {
+                        console.log("error in store db", error);
+                    }
+                }
+                setCard(card.articles);
+                // disable skeleton
+                setLoading(false);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        // if user is offline, then getting data from Firestore
+        else {
+            const querySnapshot = await getDocs(collection(db, "headlines"));
+            const newCards = [];
+            QuerySnapshot.forEach((doc) => {
+                console.log(doc.id, " => ", doc.data());
+                newCards.push(doc.data());
+            });
+            setCard(newCards)
+            setLoading(false);
+        }
     }
     function fav(item) {
 
@@ -97,22 +134,22 @@ const HomeCard3 = () => {
                                                     sx={{ cursor: "pointer", objectFit: 'cover' }}
                                                     onClick={() => handleCardClick(response)}
                                                 /></Link>
-                                             <CardActions disableSpacing>
-                                            <IconButton aria-label="add to favorites" sx={{
-                                                transition: "transform 0.3s ease-in-out",
-                                                "&:hover": {
-                                                    transform: "scale(1.2)",
-                                                },
-                                            }}>
-                                                <Checkbox
-                                                    inputProps={{ "aria-label": "Favorite" }}
-                                                    onClick={() => fav(response)}
-                                                    icon={<FavoriteBorder />}
-                                                    checkedIcon={<Favorite color="secondary" />}
-                                                />
-                                            </IconButton>
+                                            <CardActions disableSpacing>
+                                                <IconButton aria-label="add to favorites" sx={{
+                                                    transition: "transform 0.3s ease-in-out",
+                                                    "&:hover": {
+                                                        transform: "scale(1.2)",
+                                                    },
+                                                }}>
+                                                    <Checkbox
+                                                        inputProps={{ "aria-label": "Favorite" }}
+                                                        onClick={() => fav(response)}
+                                                        icon={<FavoriteBorder />}
+                                                        checkedIcon={<Favorite color="secondary" />}
+                                                    />
+                                                </IconButton>
 
-                                        </CardActions>
+                                            </CardActions>
                                         </Card>
                                         <br />
 

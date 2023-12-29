@@ -14,13 +14,12 @@ const PhoneOtp = ({ user, setOpen, setLoading, phoneNo }) => {
     const dispatch = useDispatch();
 
     async function onOTPVerify() {
-
         window.confirmationResult
             .confirm(otp)
             .then((res) => {
                 // after otp verification success
-                dispatch(loginUser(user));
-                console.log(res);
+                console.log("otp verified: ", res);
+                dispatch(loginUser(user))
                 setLoading(false);
                 setOpen(false);
                 console.log("Verify success");

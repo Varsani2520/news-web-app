@@ -16,6 +16,8 @@ import { logout, removeAllFavouriteItem } from "@/app/action/action";
 import toast, { Toaster } from "react-hot-toast";
 
 const layout = ({ children }) => {
+  // getting user detailes from redux like name, email and image
+  const userDetails = useSelector((state) => state.user.user);
   const autenticated = useSelector((state) => state.user.isAuthenticated);
   const user = autenticated ? useSelector((state) => state.user.user.url) : "";
   const name = autenticated ? useSelector((state) => state.user.user.name) : "";
@@ -27,10 +29,10 @@ const layout = ({ children }) => {
 
   const handleSignOut = async () => {
     try {
+      window.location.href("/");
       dispatch(logout());
       dispatch(removeAllFavouriteItem());
       toast.success("logout success");
-      window.location.href("/");
     } catch (error) {
       console.log(error);
     }
@@ -57,42 +59,35 @@ const layout = ({ children }) => {
             }}
           >
             <Box display="flex" flexDirection="column" alignItems="center">
-              {loading ? null : user ? (
-                <>
-                  <Avatar
-                    src={user}
-                    alt="User Avatar"
-                    sx={{ width: 120, height: 120, marginBottom: 2 }}
-                    type="file"
-                  />
-                  <Typography variant="h6" sx={{ fontSize: 20, color: "#333" }}>
-                    {name}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    sx={{ fontSize: 16, color: "#666" }}
-                  >
-                    {email}
-                  </Typography>
-                </>
-              ) : (
-                <></>
-              )}
-              {loading ? null : user ? (
-                <Button
-                  variant="contained"
-                  onClick={() => handleSignOut()}
-                  color="primary"
-                  sx={{
-                    marginTop: 2,
-                    "&:hover": { backgroundColor: "#0069d9" },
-                  }}
+              <>
+                <Avatar
+                  src={userDetails.url}
+                  alt="User Avatar"
+                  sx={{ width: 120, height: 120, marginBottom: 2 }}
+                  type="file"
+                />
+                <Typography variant="h6" sx={{ fontSize: 20, color: "#333" }}>
+                  {userDetails.name}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{ fontSize: 16, color: "#666" }}
                 >
-                  Logout
-                </Button>
-              ) : (
-                <></>
-              )}
+                  {userDetails.email}
+                </Typography>
+              </>
+
+              <Button
+                variant="contained"
+                onClick={() => handleSignOut()}
+                color="primary"
+                sx={{
+                  marginTop: 2,
+                  "&:hover": { backgroundColor: "#0069d9" },
+                }}
+              >
+                Logout
+              </Button>
             </Box>
           </Card>
           <Divider />
