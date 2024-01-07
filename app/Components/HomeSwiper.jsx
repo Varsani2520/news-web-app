@@ -25,9 +25,9 @@ const HomeSwiper = () => {
   const [loading, setLoading] = useState(true);
   async function homeSwiper() {
     try {
-      const result = await getHeadlines
-        ();
-      setData(result.articles);
+      const result = await getHeadlines();
+      setData(result.articles.results);
+      console.log(result);
       setLoading(false);
     } catch (error) {
       console.error("error", error);
@@ -35,7 +35,6 @@ const HomeSwiper = () => {
   }
   const handleCardClick = (response) => {
     localStorage.setItem("selectedCardData", JSON.stringify(response));
-
   };
   useEffect(() => {
     homeSwiper();
@@ -43,9 +42,12 @@ const HomeSwiper = () => {
   return (
     <div>
       <div>
-        <Container maxWidth="xl" sx={{ mt: { xs: "25%", md: "15%", lg: "10%" } }}>
+        <Container
+          maxWidth="xl"
+          sx={{ mt: { xs: "25%", md: "15%", lg: "10%" } }}
+        >
           {loading ? (
-            <Skeleton height={500} width={'100%'} />
+            <Skeleton height={500} width={"100%"} />
           ) : (
             <Swiper
               className="w-full mt-10 justify-center "
@@ -59,14 +61,18 @@ const HomeSwiper = () => {
                 <SwiperSlide key={index}>
                   {/* Render your content for each article here */}
                   <div>
-                    <Link href={`/top-headlines/${slugify(article.title)}`} passHref>
+                    <Link
+                      href={`/top-headlines/${slugify(article.title)}`}
+                      passHref
+                    >
                       <img
-                        src={article.urlToImage ? article.urlToImage : '/News-logo.jpg'} //
+                        src={article.image ? article.image : "/News-logo.jpg"} //
                         alt={article.title}
                         style={{
                           objectFit: "cover",
                           height: "100%",
-                          width: "100%", cursor: 'pointer'
+                          width: "100%",
+                          cursor: "pointer",
                         }}
                         onClick={() => handleCardClick(article)}
                       />

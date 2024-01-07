@@ -34,22 +34,15 @@ const Page = () => {
             component="img"
             alt={selectedCardData.title}
             sx={{ height: "100%", width: "100%", objectfit: "cover" }}
-            image={selectedCardData.urlToImage || "/default-image.jpg"}
+            image={selectedCardData.image || "/default-image.jpg"}
           />
           <CardContent>
             <Typography variant="h4">{selectedCardData.title}</Typography>
+
             <Typography variant="h6">
-              Author: {selectedCardData.author}
+              Published At: {selectedCardData.date}
             </Typography>
-            <Typography variant="body1">
-              Content: {selectedCardData.content}
-            </Typography>
-            <Typography variant="body2">
-              Published At: {selectedCardData.publishedAt}
-            </Typography>
-            <Typography variant="body1">
-              {selectedCardData.description}
-            </Typography>
+            <Typography variant="body1">{selectedCardData.body}</Typography>
             <Link
               href={selectedCardData.url}
               target="_blank"

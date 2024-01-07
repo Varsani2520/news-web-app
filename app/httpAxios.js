@@ -1,3 +1,5 @@
 import axios from "axios";
 
-export const httpAxios = axios.create({ baseURL: "https://newsapi.org/v2" });
+export const httpAxios = axios.create({
+  baseURL: "http://eventregistry.org/api/v1",
+});

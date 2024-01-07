@@ -46,11 +46,11 @@ const SearchPage = () => {
           <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
             <Card>
               <CardHeader title={result.title} sx={{ background: "orange" }} />
-              {result.urlToImage && (
+              {result.image && (
                 <CardMedia
                   component="img"
                   height="140"
-                  image={result.urlToImage}
+                  image={result.image}
                   alt={result.title}
                 />
               )}

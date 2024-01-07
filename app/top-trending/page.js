@@ -36,7 +36,7 @@ const page = () => {
   }
   async function fetchCards() {
     const result = await getPopularity();
-    setCard(result.articles);
+    setCard(result.articles.results);
     setLoading(false);
   }
   const handleCardClick = (response) => {
@@ -90,20 +90,14 @@ const page = () => {
                         <CardMedia
                           component="img"
                           image={
-                            response.urlToImage
-                              ? response.urlToImage
-                              : "/News-logo.jpg"
+                            response.image ? response.image : "/News-logo.jpg"
                           }
                           alt={response.alt}
                           sx={{ cursor: "pointer", objectFit: "cover" }}
                           onClick={() => handleCardClick(response)}
                         />
                       </Link>
-                      <CardContent>
-                        <Typography variant="body2" color="text.secondary">
-                          {response.description}
-                        </Typography>
-                      </CardContent>
+
                       <CardActions disableSpacing>
                         <IconButton
                           aria-label="add to favorites"

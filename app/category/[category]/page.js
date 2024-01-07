@@ -31,7 +31,7 @@ import { db } from "@/app/firebase";
 const CategoryPage = () => {
   const { category } = useParams();
   const [loading, setLoading] = useState(true);
-  const [cardsData, setCardsData] = useState([]);
+  const [card, setCard] = useState([]);
   const dispatch = useDispatch();
   function fav(item) {
     dispatch(addToFavouriteItem(item));
@@ -43,12 +43,14 @@ const CategoryPage = () => {
     // if online then get data from api
     if (isOnline) {
       try {
-        const cardsData = await getCategoryNews();
+        const cardsData = await getCategoryNews(category);
+        console.log("res", cardsData);
+        setCard(cardsData.articles.results);
         // store the data in firestore so we got it when user is offline
-        if (card.articles) {
+        if (cardsData.articles.results) {
           try {
             await Promise.all(
-              cardsData.articles.map(async (article) => {
+              cardsData.articles.results.map(async (article) => {
                 await addDoc(collection(db, "category"), article);
               })
             );
@@ -57,7 +59,6 @@ const CategoryPage = () => {
             console.log("error in store db", error);
           }
         }
-        setCardsData(card.articles);
         // disable skeleton
         setLoading(false);
       } catch (error) {
@@ -72,7 +73,7 @@ const CategoryPage = () => {
         console.log(doc.id, " => ", doc.data());
         newCards.push(doc.data());
       });
-      setCardsData(newCards);
+      setCard(newCards);
       setLoading(false);
     }
   }
@@ -105,7 +106,7 @@ const CategoryPage = () => {
                 </Box>
               </Grid>
             ))
-          : cardsData.map((card) => (
+          : card.map((card) => (
               <Grid item xs={12} sm={6} md={6} lg={4} key={card.id}>
                 <Card
                   sx={{
@@ -125,9 +126,7 @@ const CategoryPage = () => {
                   <Link href={`/category/${category}/${slugify(card.title)}`}>
                     <CardMedia
                       component="img"
-                      image={
-                        card.urlToImage ? card.urlToImage : "/News-logo.jpg"
-                      }
+                      image={card.image ? card.image : "/News-logo.jpg"}
                       alt={card.alt}
                       sx={{ cursor: "pointer", objectFit: "cover" }}
                       onClick={() => handleCardClick(card)}
