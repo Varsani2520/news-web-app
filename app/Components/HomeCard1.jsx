@@ -25,15 +25,23 @@ import slugify from "slugify";
 import Link from "next/link";
 import { db } from "../firebase";
 import { addDoc, collection, getDocs } from "firebase/firestore";
+import Cookies from "js-cookie";
+import SkeletonCard from "./SkeletonCard";
+import CardSaple from "./CardSaple";
 
-const HomeCard1 = () => {
+const HomeCard1 = (request) => {
   const [card, setCard] = useState([]);
   const [loading, setLoading] = useState(true);
   // to check whether user is online or not
   const dispatch = useDispatch();
+  const user = Cookies.get("login")?.value === "true";
   function fav(item) {
-    dispatch(addToFavouriteItem(item));
-    toast.success("Added to wishlist  successfully");
+    if (user) {
+      dispatch(addToFavouriteItem(item));
+      toast.success("Added to wishlist  successfully");
+    } else {
+      toast.error("Please log in first to like articles");
+    }
   }
   const handleCardClick = (response) => {
     localStorage.setItem("selectedCardData", JSON.stringify(response));
@@ -89,78 +97,20 @@ const HomeCard1 = () => {
       <Box sx={{ display: "flex" }}>
         <Grid container spacing={2}>
           {loading
-            ? Array.from({ length: 8 }).map((_, index) => (
-                <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
-                  <Box>
-                    <Card sx={{ maxWidth: 345 }}>
-                      <Skeleton
-                        variant="rectangular"
-                        height={194}
-                        animation="wave"
-                      />
-                      <CardContent>
-                        <Skeleton animation="wave" />
-                      </CardContent>
-                    </Card>
-                    <br />
-                  </Box>
-                </Grid>
-              ))
-            : card.slice(0, 12).map((response) => (
-                <Grid item xs={12} sm={6} md={6} lg={4} key={response.id}>
-                  <Box>
-                    <Card
-                      sx={{
-                        maxWidth: "100%",
-                        transition: "transform 0.3s ease-in-out",
-                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                        "&:hover": {
-                          transform: "scale(1.05)",
-                          boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
-                        },
-                      }}
-                    >
-                      <CardHeader
-                        title={response.title}
-                        sx={{ background: "#ff2800", textDecoration: "none" }}
-                      />
-                      <Link
-                        href={`/top-headlines/${slugify(response.title)}`}
-                        passHref
-                      >
-                        <CardMedia
-                          component="img"
-                          image={
-                            response.image ? response.image : "/News-logo.jpg"
-                          }
-                          alt={response.alt}
-                          sx={{ cursor: "pointer", objectFit: "cover" }}
-                          onClick={() => handleCardClick(response)}
-                        />
-                      </Link>
-                      <CardActions disableSpacing>
-                        <IconButton
-                          aria-label="add to favorites"
-                          sx={{
-                            transition: "transform 0.3s ease-in-out",
-                            "&:hover": {
-                              transform: "scale(1.2)",
-                            },
-                          }}
-                        >
-                          <Checkbox
-                            inputProps={{ "aria-label": "Favorite" }}
-                            onClick={() => fav(response)}
-                            icon={<FavoriteBorder />}
-                            checkedIcon={<Favorite color="secondary" />}
-                          />
-                        </IconButton>
-                      </CardActions>
-                    </Card>
-                    <br />
-                  </Box>
-                </Grid>
-              ))}
+            ? Array.from({ length: 8 }).map((_, index) => <SkeletonCard />)
+            : card
+                .slice(0, 12)
+                .map((response) => (
+                  <CardSaple
+                    key={response.id}
+                    title={response.title}
+                    image={response.image}
+                    alt={response.alt}
+                    onClick={() => handleCardClick(response)}
+                    onFavoriteClick={() => fav(response)}
+                    href={`/top-headlines/${slugify(response.title)}`}
+                  />
+                ))}
         </Grid>
       </Box>
     </Container>

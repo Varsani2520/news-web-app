@@ -51,18 +51,16 @@ const Page = () => {
               objectFit: "cover",
               position: "relative",
             }}
-            image={parsedData.urlToImage || "/default-image.jpg"}
+            image={parsedData.image || "/default-image.jpg"}
           ></CardMedia>
           <CardContent>
             <Typography variant="h4">{parsedData.title}</Typography>
-            <Typography variant="h6">Author: {parsedData.author}</Typography>
-            <Typography variant="body1">
-              Content: {parsedData.content}
+           
+            
+            <Typography variant="h6">
+              Published At: {parsedData.date}
             </Typography>
-            <Typography variant="body2">
-              Published At: {parsedData.publishedAt}
-            </Typography>
-            <Typography variant="body1">{parsedData.description}</Typography>
+            <Typography variant="body1">{parsedData.body}</Typography>
             <Link
               href={parsedData.url}
               target="_blank"

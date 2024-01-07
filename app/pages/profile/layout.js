@@ -14,8 +14,10 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { logout, removeAllFavouriteItem } from "@/app/action/action";
 import toast, { Toaster } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const layout = ({ children }) => {
+  const router = useRouter();
   // getting user detailes from redux like name, email and image
   const userDetails = useSelector((state) => state.user.user);
   const autenticated = useSelector((state) => state.user.isAuthenticated);
@@ -29,10 +31,11 @@ const layout = ({ children }) => {
 
   const handleSignOut = async () => {
     try {
-      window.location.href("/");
+      console.log("inside logout");
+      toast.success("logout success");
       dispatch(logout());
       dispatch(removeAllFavouriteItem());
-      toast.success("logout success");
+      router.push("/");
     } catch (error) {
       console.log(error);
     }
@@ -79,7 +82,7 @@ const layout = ({ children }) => {
 
               <Button
                 variant="contained"
-                onClick={() => handleSignOut()}
+                onClick={handleSignOut}
                 color="primary"
                 sx={{
                   marginTop: 2,

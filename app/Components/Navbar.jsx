@@ -162,17 +162,25 @@ function Navbar() {
             console.error("Search query is empty.");
             return;
         }
+    
+        // Check if the user is authenticated
+        if (!isAuthenticated) {
+            // If not authenticated, show a toast message and return
+            toast.error("Please log in to perform a search");
+            return;
+        }
+    
         console.log("Search Query:", searchQuery);
         router.push(`/pages/search/${searchQuery}`);
         const apiKey = '50c06e8227e6493ca95655b769a50faf';
         const apiUrl = `https://newsapi.org/v2/everything?q=${searchQuery}&apiKey=${apiKey}`;
-
+    
         try {
             const response = await fetch(apiUrl);
             const data = await response.json();
-
+    
             console.log("News Data:", data);
-
+    
             router.push({
                 pathname: '/pages/search', // Change 'search' to the desired path for displaying search results
                 query: { q: searchQuery }, // Pass the search query as a parameter
@@ -181,6 +189,7 @@ function Navbar() {
             console.error("Error fetching news data:", error);
         }
     };
+    
 
     const handleSearchInputChange = (event) => {
         setSearchQuery(event.target.value);
