@@ -102,7 +102,7 @@ const HomeCard1 = (request) => {
                 .slice(0, 12)
                 .map((response) => (
                   <CardSaple
-                    key={response.id}
+                    key={response.title}
                     title={response.title}
                     image={response.image}
                     alt={response.alt}

@@ -2,19 +2,19 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { enableIndexedDbPersistence, getFirestore } from "firebase/firestore";
 export const firebaseConfig = {
-  apiKey: "AIzaSyAFKJIBcnicPPJdEA3drytEQL1iCjy-hbo",
+  apiKey: "AIzaSyCfa4PAtbZAvlEPxYD0Po3UmVZCLhItGOU",
 
-  authDomain: "news-app-9cb2c.firebaseapp.com",
+  authDomain: "news-web-app-ff3ec.firebaseapp.com",
 
-  projectId: "news-app-9cb2c",
+  projectId: "news-web-app-ff3ec",
 
-  storageBucket: "news-app-9cb2c.appspot.com",
+  storageBucket: "news-web-app-ff3ec.appspot.com",
 
-  messagingSenderId: "300586186042",
+  messagingSenderId: "68425481063",
 
-  appId: "1:300586186042:web:9d2457f765aefd3630cc03",
+  appId: "1:68425481063:web:a53e1bc24b2bcab7850dc2",
 
-  measurementId: "G-PH15TW1W65",
+  measurementId: "G-QPD9K58RVW",
 };
 
 // Initialize Firebase

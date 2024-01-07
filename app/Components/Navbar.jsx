@@ -99,7 +99,8 @@ function Navbar() {
 
         onCaptchVerify();
 
-        const appVerifier = window.recaptchaVerifier;
+        const appVerifier = typeof window !== 'undefined' ? window.recaptchaVerifier : null;
+
 
         const formatPh = "+" + ph;
         console.log("pghone", formatPh);
