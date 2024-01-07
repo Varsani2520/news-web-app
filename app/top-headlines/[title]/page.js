@@ -1,4 +1,5 @@
 "use client";
+import SingleCardDetai from "@/app/Components/SingleCardDetai";
 import {
   Container,
   Typography,
@@ -29,30 +30,14 @@ const Page = () => {
   return (
     <Container maxWidth="xl" sx={{ mt: { xs: "25%", md: "15%", lg: "10%" } }}>
       {selectedCardData && (
-        <Card sx={{ maxWidth: 1000, margin: "auto" }}>
-          <CardMedia
-            component="img"
-            alt={selectedCardData.title}
-            sx={{ height: "100%", width: "100%", objectfit: "cover" }}
-            image={selectedCardData.image || "/default-image.jpg"}
-          />
-          <CardContent>
-            <Typography variant="h4">{selectedCardData.title}</Typography>
-
-            <Typography variant="h6">
-              Published At: {selectedCardData.date}
-            </Typography>
-            <Typography variant="body1">{selectedCardData.body}</Typography>
-            <Link
-              href={selectedCardData.url}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Read More
-            </Link>
-            {/* Add more information as needed */}
-          </CardContent>
-        </Card>
+        <SingleCardDetai
+          alt={selectedCardData.alt}
+          image={selectedCardData.image}
+          title={selectedCardData.title}
+          Published={selectedCardData.date}
+          body={selectedCardData.body}
+          href={selectedCardData.url}
+        />
       )}
     </Container>
   );

@@ -30,46 +30,14 @@ const Page = () => {
   return (
     <Container maxWidth="xl" sx={{ mt: { xs: "25%", md: "15%", lg: "10%" } }}>
       {parsedData && (
-        <Card sx={{ maxWidth: 1000, margin: "auto" }}>
-          <IconButton
-            sx={{
-              position: "absolute",
-              top: 0,
-              right: 0,
-              color: "red", // You can customize the color
-              backgroundColor: "white", // Background color if needed
-            }}
-          >
-            <FavoriteIcon />
-          </IconButton>
-          <CardMedia
-            component="img"
-            alt={parsedData.title}
-            sx={{
-              height: "100%",
-              width: "100%",
-              objectFit: "cover",
-              position: "relative",
-            }}
-            image={parsedData.image || "/default-image.jpg"}
-          ></CardMedia>
-          <CardContent>
-            <Typography variant="h4">{parsedData.title}</Typography>
-           
-            
-            <Typography variant="h6">
-              Published At: {parsedData.date}
-            </Typography>
-            <Typography variant="body1">{parsedData.body}</Typography>
-            <Link
-              href={parsedData.url}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Read More
-            </Link>
-          </CardContent>
-        </Card>
+        <SingleCardDetai
+          alt={parsedData.alt}
+          image={parsedData.image}
+          title={parsedData.title}
+          Published={parsedData.date}
+          body={parsedData.body}
+          href={parsedData.url}
+        />
       )}
     </Container>
   );
