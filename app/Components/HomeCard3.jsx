@@ -99,12 +99,12 @@ const HomeCard3 = () => {
         <Box sx={{ display: "flex" }}>
           <Grid container spacing={2}>
             {loading
-              ? Array.from({ length: 8 }).map((_, index) => <SkeletonCard />)
+              ? Array.from({ length: 8 }).map((_, index) => <SkeletonCard key={index+20}/>)
               : card
                   .slice(0, 12)
                   .map((response) => (
                     <CardSaple
-                      key={response.id}
+                      key={response.uri}
                       title={response.title}
                       image={response.image}
                       alt={response.alt}
