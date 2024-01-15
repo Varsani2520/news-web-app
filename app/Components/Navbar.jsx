@@ -24,7 +24,8 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import GoogleIcon from "@mui/icons-material/Google";
 import "react-phone-input-2/lib/style.css";
 import PhoneInput from "react-phone-input-2";
-import PhoneOtp from "./PhoneOtp";
+// dynamic import from next dynamic
+const PhoneOtp = dynamic(() => import("./PhoneOtp"), { ssr: false });
 import {
   RecaptchaVerifier,
   getAuth,
@@ -32,6 +33,7 @@ import {
 } from "firebase/auth";
 import { auth } from "../firebase";
 import toast, { Toaster } from "react-hot-toast";
+import dynamic from "next/dynamic";
 
 const pages = [
   { label: "Home", href: "/" },
@@ -122,6 +124,16 @@ function Navbar() {
   // when user verify capture
   async function onCaptchVerify() {
     const auth = getAuth();
+
+    if (!window) {
+      console.log("no window");
+      return;
+    }
+
+    if (!window.confirmationResult) {
+      console.log("no confirmation result");
+      return;
+    }
     if (typeof window !== "undefined")
       if (!window.recaptchaVerifier) {
         window.recaptchaVerifier = new RecaptchaVerifier(
@@ -145,19 +157,6 @@ function Navbar() {
       }
   }
 
-  // when user click sign up btn
-  async function handleSubmit(e) {
-    e.preventDefault();
-
-    onSignup(
-      setLoading,
-      onCaptchVerify,
-
-      setOtpModel,
-      setOpen,
-      ph
-    );
-  }
   const [searchQuery, setSearchQuery] = React.useState("");
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
@@ -241,7 +240,7 @@ function Navbar() {
             >
               <div className="" id="recaptcha-containe"></div>
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                <MenuItem key={page + 50} onClick={handleCloseNavMenu}>
                   <Link href={page.href} style={{ textDecoration: "none" }}>
                     <Typography textAlign="center" sx={{ cursor: "pointer" }}>
                       {page.label}
