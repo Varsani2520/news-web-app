@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState } from "react";
 import OtpInput from "otp-input-react";
 import { IconButton } from "@mui/material";
@@ -11,29 +10,30 @@ import { loginUser } from "../action/action";
 
 const PhoneOtp = ({ user, setOpen, setLoading, phoneNo }) => {
   const [otp, setOtp] = useState(null);
-  // const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch();
-  async function onOTPVerify() {
-    setLoading(true);
 
+  const dispatch = useDispatch();
+
+  async function onOTPVerify() {
+    
     if (!window.confirmationResult) {
-      console.log("confirm availvalbe");
-      setLoading(false);
+      // Log an error or handle the absence of confirmationResult
+      console.log("Confirmation result not available");
       return;
     }
+
     window.confirmationResult
       .confirm(otp)
       .then((res) => {
         // after otp verification success
-        console.log("otp verified: ", res);
+        addUserData(user);
         dispatch(loginUser(user));
-        setLoading(false);
+        console.log(res);
         setOpen(false);
-        user.phone = phoneNo;
         console.log("Verify success");
+        user.phone = phoneNo;
         console.log(user);
         toast.success("Login successful");
-        Cookies.set("login", true);
+        Cookies.set("authenticated", true);
       })
       .catch((err) => {
         console.log(err);
