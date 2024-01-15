@@ -51,9 +51,9 @@ const HomeCard2 = ({ categories }) => {
       <Box sx={{ display: "flex" }}>
         <Grid container spacing={2}>
           {loading
-            ? Array.from({ length: 8 }).map((_, index) => <SkeletonCard />)
+            ? Array.from({ length: 8 }).map((_, index) => <SkeletonCard key={index+10} />)
             : categories.map((category) => (
-                <Grid item xs={12} sm={6} md={6} lg={4} key={category}>
+                <Grid item xs={12} sm={6} md={6} lg={4} key={category.uri}>
                   <Box>
                     <Link href={`category/${category}`}>
                       <Card
