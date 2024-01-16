@@ -21,7 +21,7 @@ const SearchPage = () => {
         return;
       }
 
-      const apiKey = "69f2b0c4d53e40099e654bc7119426ac";
+      const apiKey = "da25390a-9d81-4eb6-9c8e-d0f2dcd34082";
       const apiUrl = `https://newsapi.org/v2/everything?q=${query}&apiKey=${apiKey}`;
 
       try {
