@@ -16,7 +16,7 @@ export async function getCategoryNews(category) {
       articlesArticleBodyLen: -1,
       resultType: "articles",
       dataType: ["news", "pr"],
-      apiKey: "120ce736-5ef5-4b17-88b9-95c3fa4412f2",
+      apiKey: "da25390a-9d81-4eb6-9c8e-d0f2dcd34082",
       forceMaxDataTimeWindow: 31,
     },
   });
