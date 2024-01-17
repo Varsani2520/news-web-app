@@ -173,7 +173,7 @@ function Navbar() {
 
     console.log("Search Query:", searchQuery);
     router.push(`/pages/search/${searchQuery}`);
-    const apiKey = "50c06e8227e6493ca95655b769a50faf";
+    const apiKey = "da25390a-9d81-4eb6-9c8e-d0f2dcd34082";
     const apiUrl = `https://newsapi.org/v2/everything?q=${searchQuery}&apiKey=${apiKey}`;
 
     try {
