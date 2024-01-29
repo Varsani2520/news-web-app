@@ -5,7 +5,7 @@ import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import Box from "@mui/material/Box";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addToFavouriteItem, favourite } from "../action/action";
 import {
   Button,
@@ -34,7 +34,9 @@ const HomeCard3 = () => {
   const [loading, setLoading] = useState(true);
   const [showAll, setShowAll] = useState(false);
   const isOnline = navigator.onLine;
-  const user = Cookies.get("login")?.value === "true";
+  // const user = Cookies.get("login")?.value === "true";
+  const user = useSelector((state) => state.user.isAuthenticated);
+
   const router = useRouter();
   const dispatch = useDispatch();
   async function fetchCards() {
@@ -99,7 +101,9 @@ const HomeCard3 = () => {
         <Box sx={{ display: "flex" }}>
           <Grid container spacing={2}>
             {loading
-              ? Array.from({ length: 8 }).map((_, index) => <SkeletonCard key={index+20}/>)
+              ? Array.from({ length: 8 }).map((_, index) => (
+                  <SkeletonCard key={index + 20} />
+                ))
               : card
                   .slice(0, 12)
                   .map((response) => (

@@ -36,7 +36,9 @@ const CategoryPage = () => {
   const [loading, setLoading] = useState(true);
   const [card, setCard] = useState([]);
   const dispatch = useDispatch();
-  const user = Cookies.get("login")?.value === "true";
+  // const user = Cookies.get("login")?.value === "true";
+  const user = useSelector((state) => state.user.isAuthenticated);
+
   function fav(item) {
     if (user) {
       dispatch(addToFavouriteItem(item));

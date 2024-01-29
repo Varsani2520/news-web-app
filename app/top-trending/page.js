@@ -5,16 +5,18 @@ import { Container, Box, Grid } from "@mui/material";
 import SkeletonCard from "../Components/SkeletonCard";
 import { getPopularity } from "../service/getPopularity";
 import slugify from "slugify";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import toast, { Toaster } from "react-hot-toast";
 import Cookies from "js-cookie";
 import CardSaple from "../Components/CardSaple";
+import { addToFavouriteItem } from "../action/action";
 
 const Page = () => {
   const [card, setCard] = useState([]);
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
-  const user = Cookies.get("login")?.value === "true";
+  // const user = Cookies.get("login")?.value === "true";
+  const user = useSelector((state) => state.user.isAuthenticated);
 
   function fav(item) {
     if (user) {

@@ -404,13 +404,13 @@ function Navbar() {
                 </Dialog>
               </>
             ) : (
-              <div>
-                <Link href="/pages/profile">
+              <Link href="/pages/profile/likes">
+                <div>
                   <IconButton sx={{ p: 0 }} size="small">
                     <Avatar src={userImage ? userImage : ""} />
                   </IconButton>
-                </Link>
-              </div>
+                </div>
+              </Link>
             )}
           </Box>
         </Toolbar>

@@ -34,7 +34,9 @@ const HomeCard1 = (request) => {
   const [loading, setLoading] = useState(true);
   // to check whether user is online or not
   const dispatch = useDispatch();
-  const user = Cookies.get("login")?.value === "true";
+  // const user = Cookies.get("login")?.value === "true";
+  const user = useSelector((state) => state.user.isAuthenticated);
+
   function fav(item) {
     if (user) {
       dispatch(addToFavouriteItem(item));
@@ -97,7 +99,9 @@ const HomeCard1 = (request) => {
       <Box sx={{ display: "flex" }}>
         <Grid container spacing={2}>
           {loading
-            ? Array.from({ length: 8 }).map((_, index) => <SkeletonCard key={index} />)
+            ? Array.from({ length: 8 }).map((_, index) => (
+                <SkeletonCard key={index} />
+              ))
             : card
                 .slice(0, 12)
                 .map((response) => (
