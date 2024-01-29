@@ -8,6 +8,7 @@ import TextField from "@mui/material/TextField";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import { Typography } from "@mui/material";
+import { getCategoryNews } from "@/app/service/getCategory";
 
 const SearchPage = () => {
   const router = useRouter();
@@ -20,16 +21,11 @@ const SearchPage = () => {
         // No search query provided
         return;
       }
-
-      const apiKey = "da25390a-9d81-4eb6-9c8e-d0f2dcd34082";
-      const apiUrl = `https://newsapi.org/v2/everything?q=${query}&apiKey=${apiKey}`;
-
       try {
-        const response = await fetch(apiUrl);
-        const data = await response.json();
+        const response = await getCategoryNews(query);
 
-        console.log("Search Results:", data.articles);
-        setSearchResults(data.articles);
+        console.log("Search Results:", response.articles.results);
+        setSearchResults(response.articles.results);
       } catch (error) {
         console.error("Error fetching search results:", error);
       }
