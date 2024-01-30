@@ -31,7 +31,7 @@ const LogOutPage = () => {
       dispatch(logoutUser());
       Cookies.set("login", false);
       router.push("/");
-      window.location.assign("/");
+      window.location.replace("/");
     } catch (error) {
       console.log(error);
     }
