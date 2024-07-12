@@ -9,6 +9,7 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import { Typography, Skeleton } from "@mui/material";
 import { getCategoryNews } from "@/app/service/getCategory";
+import { getQuery } from "@/app/service/getQuery";
 
 const SearchPage = () => {
   const router = useRouter();
@@ -23,7 +24,7 @@ const SearchPage = () => {
         return;
       }
       try {
-        const response = await getCategoryNews(query);
+        const response = await getQuery(query);
 
         console.log("Search Results:", response.articles.results);
         setSearchResults(response.articles.results);
