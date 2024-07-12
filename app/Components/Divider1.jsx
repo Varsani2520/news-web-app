@@ -1,17 +1,26 @@
-import { Stack, Typography } from '@mui/material'
-import React from 'react'
+import React from 'react';
+import { Stack, Typography } from '@mui/material';
 
 const Divider1 = ({ title }) => {
   return (
-    <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ paddingY: '5%' }}>
-      <Typography gutterBottom variant="h3" component="div">
+    <Stack
+      direction="row"
+      justifyContent="space-between"
+      alignItems="center"
+      sx={{
+        backgroundColor: '#f44336', 
+        color: '#ffffff', 
+        padding: '10px 20px', 
+        marginY: '6%', 
+        borderRadius: '4px', 
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', 
+      }}
+    >
+      <Typography variant="h3" component="div" sx={{ fontWeight: 'bold' }}>
         {title}
       </Typography>
-      <Typography gutterBottom variant="h6" component="div">
-        View More
-      </Typography>
     </Stack>
-  )
-}
+  );
+};
 
-export default Divider1
+export default Divider1;

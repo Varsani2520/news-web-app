@@ -1,6 +1,6 @@
-'use client'
+'use client';
 import React, { useEffect, useState } from "react";
-import { Container, Skeleton, Box, Grid } from "@mui/material";
+import { Container, Skeleton, Grid, Typography } from "@mui/material";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Scrollbar, A11y, Autoplay } from "swiper/modules";
 import "swiper/css";
@@ -21,11 +21,14 @@ const HomeLayout = () => {
   useEffect(() => {
     async function fetchHeadlines() {
       try {
-        const articles = await getQuery({ q: "headline" });
+        const response = await getQuery("headline");
+        const articles = response.docs; // Adjusted based on expected response structure
+        console.log("headline",articles)
         setData(articles);
         setLoading(false);
       } catch (error) {
         console.error("Error loading headlines:", error);
+        setLoading(false);
       }
     }
     fetchHeadlines();
@@ -39,20 +42,20 @@ const HomeLayout = () => {
     <Container maxWidth="xl" sx={{ background: "#eceff2", marginTop: '6%' }}>
       {loading ? (
         <Skeleton height={500} width={"100%"} />
-      ) : (
-
+      ) : data.length > 0 ? (
         <Grid container spacing={2}>
           <Grid item xs={12} md={2.5}>
             {data.slice(0, 2).map((article, index) => (
               <Card2
-              height={"150"}
+                height={"150"}
                 key={index}
-                image={article.multimedia.length > 0 ? `https://www.nytimes.com/${article.multimedia[0].url}` : "/News-logo.jpg"}
+                image={article.multimedia?.length > 0 ? `https://www.nytimes.com/${article.multimedia[0].url}` : "/News-logo.jpg"}
                 title={article.headline.main}
                 description={article.snippet}
+                onClick={() => handleCardClick(article)}
+                href={`/top-headlines/${slugify(article.headline.main)}`}
               />
             ))}
-
           </Grid>
           <Grid item xs={12} md={5}>
             <Swiper
@@ -75,7 +78,7 @@ const HomeLayout = () => {
                     >
                       <img
                         src={
-                          article.multimedia.length > 0
+                          article.multimedia?.length > 0
                             ? `https://www.nytimes.com/${article.multimedia[0].url}`
                             : "/News-logo.jpg"
                         }
@@ -89,16 +92,22 @@ const HomeLayout = () => {
             </Swiper>
           </Grid>
           <Grid item xs={12} md={4.5}>
-            {data.slice(3, 7).map((article, id) => (
-
-              <Card3 key={id}
-                image={article.multimedia.length > 0 ? `https://www.nytimes.com/${article.multimedia[0].url}` : "/News-logo.jpg"}
+            {data.slice(2, 6).map((article, id) => (
+              <Card3
+                key={id}
+                image={article.multimedia?.length > 0 ? `https://www.nytimes.com/${article.multimedia[0].url}` : "/News-logo.jpg"}
                 title={article.headline.main}
                 description={article.snippet}
+                onClick={() => handleCardClick(article)}
+                href={`/top-headlines/${slugify(article.headline.main)}`}
               />
             ))}
           </Grid>
         </Grid>
+      ) : (
+        <Typography variant="h6" color="textSecondary" align="center">
+          No articles available.
+        </Typography>
       )}
     </Container>
   );

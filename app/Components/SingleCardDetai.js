@@ -1,33 +1,61 @@
-import { Card, CardContent, CardMedia, Typography } from "@mui/material";
-import Link from "next/link";
 import React from "react";
+import {
+  Box,
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  IconButton,
+  Link as MuiLink,
+} from "@mui/material";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
-export default function SingleCardDetai({
-  alt,
-  image,
-  title,
-  Published,
-  body,
-  href,
-}) {
+const SingleCardDetail = ({ title, image, alt, published, body, href }) => {
   return (
-    <Card sx={{ maxWidth: 1000, margin: "auto" }}>
-      <CardMedia
-        component="img"
-        alt={alt}
-        sx={{ height: "100%", width: "100%", objectfit: "cover" }}
-        image={image || "/default-image.jpg"}
-      />
-      <CardContent>
-        <Typography variant="h4">title:{title}</Typography>
-
-        <Typography variant="h6">Published At: {Published}</Typography>
-        <Typography variant="body1">Description:{body}</Typography>
-        <Link href={href} target="_blank" rel="noopener noreferrer">
-          Read More
-        </Link>
-        {/* Add more information as needed */}
-      </CardContent>
-    </Card>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        p: 2,
+      }}
+    >
+      <Card sx={{ maxWidth: "800px", width: "100%", position: "relative" }}>
+        <CardMedia
+          component="img"
+          image={image || "/News-logo.jpg"}
+          alt={alt || "News Image"}
+          sx={{ height: "100%", objectFit: "cover" }}
+        />
+        <CardContent>
+          <Typography variant="h4" component="div" gutterBottom>
+            {title}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" gutterBottom>
+            Published: {new Date(published).toLocaleDateString()}
+          </Typography>
+          <Typography variant="body1" paragraph>
+            {body}
+          </Typography>
+          <MuiLink href={href} target="_blank" rel="noopener">
+            Read Full Article
+          </MuiLink>
+        </CardContent>
+        <IconButton
+          aria-label="add to favorites"
+          sx={{
+            position: "absolute",
+            top: 16,
+            right: 16,
+            backgroundColor: "white",
+            "&:hover": { backgroundColor: "white" },
+          }}
+        >
+          <FavoriteIcon color="secondary" />
+        </IconButton>
+      </Card>
+    </Box>
   );
-}
+};
+
+export default SingleCardDetail;

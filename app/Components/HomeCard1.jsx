@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React, { useEffect, useState } from "react";
 import { Container, Grid, Divider } from "@mui/material";
 import SkeletonCard from "./SkeletonCard";
@@ -19,7 +19,8 @@ const HomeCard1 = () => {
   useEffect(() => {
     async function fetchCards() {
       try {
-        const articles = await getQuery({ q: "sports" });
+        const response = await getQuery("sports");
+        const articles = response.docs; // Ensure this matches your data structure
         setCard(articles);
         setLoading(false);
       } catch (error) {
@@ -45,7 +46,7 @@ const HomeCard1 = () => {
   };
 
   return (
-    <Container maxWidth="xl" >
+    <Container maxWidth="xl">
       {loading ? (
         Array.from({ length: 8 }).map((_, index) => (
           <SkeletonCard key={index} />
@@ -70,10 +71,10 @@ const HomeCard1 = () => {
               />
             ))}
           </Grid>
-          <Divider orientation="vertical" flexItem sx={{marginX:'120px'}} variant="middle"/>
+          <Divider orientation="vertical" flexItem sx={{ marginX: '120px' }} variant="middle" />
           {/* Card3 */}
           <Grid item xs={12} md={6}>
-            {card.slice(3, 6).map((article, index) => (
+            {card.slice(1, 4).map((article, index) => (
               <Card3
                 key={index}
                 image={

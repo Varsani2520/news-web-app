@@ -1,17 +1,12 @@
 "use client";
-// pages/[category]/[title].js
+
 import { useParams, useRouter } from "next/navigation";
 import {
   Container,
   Typography,
-  Link,
-  Card,
-  CardContent,
-  CardMedia,
-  IconButton,
 } from "@mui/material";
-import FavoriteIcon from "@mui/icons-material/Favorite";
 import React, { useEffect, useState } from "react";
+import SingleCardDetail from "@/app/Components/SingleCardDetai";
 
 const Page = () => {
   const router = useRouter();
@@ -29,15 +24,23 @@ const Page = () => {
 
   return (
     <Container maxWidth="xl" sx={{ mt: { xs: "25%", md: "15%", lg: "10%" } }}>
-      {parsedData && (
-        <SingleCardDetai
-          alt={parsedData.alt}
-          image={parsedData.image}
-          title={parsedData.title}
-          Published={parsedData.date}
-          body={parsedData.body}
-          href={parsedData.url}
+      {parsedData ? (
+        <SingleCardDetail
+          alt={parsedData.abstract}
+          image={
+            parsedData.multimedia.length > 0
+              ? `https://www.nytimes.com/${parsedData.multimedia[0].url}`
+              : "/News-logo.jpg"
+          }
+          title={parsedData.headline ? parsedData.headline.main : "Title"}
+          published={parsedData.pub_date}
+          body={parsedData.lead_paragraph}
+          href={parsedData.web_url}
         />
+      ) : (
+        <Typography variant="h5" color="text.secondary" sx={{ mt: 4 }}>
+          No article data available. Please go back and select an article.
+        </Typography>
       )}
     </Container>
   );

@@ -3,7 +3,7 @@ import React from "react";
 
 export default function SkeletonCard() {
   return (
-    <Grid  item xs={12} sm={6} md={4} lg={3}>
+ 
       <Box>
         <Card sx={{ maxWidth: 345 }}>
           <Skeleton variant="rectangular" height={194} animation="wave" />
@@ -13,6 +13,5 @@ export default function SkeletonCard() {
         </Card>
         <br />
       </Box>
-    </Grid>
   );
 }
