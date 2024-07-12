@@ -8,7 +8,6 @@ import TextField from "@mui/material/TextField";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import { Typography, Skeleton } from "@mui/material";
-import { getCategoryNews } from "@/app/service/getCategory";
 import { getQuery } from "@/app/service/getQuery";
 
 const SearchPage = () => {
@@ -26,8 +25,8 @@ const SearchPage = () => {
       try {
         const response = await getQuery(query);
 
-        console.log("Search Results:", response.articles.results);
-        setSearchResults(response.articles.results);
+        console.log("Search Results:", response.docs);
+        setSearchResults(response.docs);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching search results:", error);
