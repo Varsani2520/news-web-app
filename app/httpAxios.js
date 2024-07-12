@@ -1,5 +1,6 @@
 import axios from "axios";
 
 export const httpAxios = axios.create({
-  baseURL: "https://eventregistry.org/api/v1",
+  baseURL: "https://api.nytimes.com/svc",
 });
+export const api_key="82kh9b5UnZwMYpH0f0BNj79WlrBd8EUt"

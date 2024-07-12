@@ -1,22 +1,17 @@
-"use client"
-import * as React from "react";
-import { styled } from "@mui/material/styles";
-import Divider from "@mui/material/Divider";
-import Container from '@mui/material/Container/Container'
-const Root = styled("div")(({ theme }) => ({
-  width: "100%",
-  ...theme.typography.body2,
-  "& > :not(style) ~ :not(style)": {
-    marginTop: theme.spacing(2),
-  },
-}));
+import { Stack, Typography } from '@mui/material'
+import React from 'react'
 
-export default function Divider1({ text }) {
+const Divider1 = ({ title }) => {
   return (
-    <Container maxWidth="xl">
-      <Root style={{ color: 'red' }}>
-        <Divider ><h1>{text}</h1></Divider>
-      </Root>
-    </Container>
-  );
+    <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ paddingY: '5%' }}>
+      <Typography gutterBottom variant="h3" component="div">
+        {title}
+      </Typography>
+      <Typography gutterBottom variant="h6" component="div">
+        View More
+      </Typography>
+    </Stack>
+  )
 }
+
+export default Divider1

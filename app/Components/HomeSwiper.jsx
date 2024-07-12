@@ -1,91 +1,107 @@
-"use client";
-import React from "react";
-import {
-  Navigation,
-  Pagination,
-  Scrollbar,
-  A11y,
-  Autoplay,
-} from "swiper/modules";
-
+'use client'
+import React, { useEffect, useState } from "react";
+import { Container, Skeleton, Box, Grid } from "@mui/material";
 import { Swiper, SwiperSlide } from "swiper/react";
-
-// Import Swiper styles
+import { Navigation, Pagination, Scrollbar, A11y, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
-import { useEffect, useState } from "react";
-import { Container, Skeleton } from "@mui/material";
-import { getHeadlines } from "../service/getHeadlines";
 import Link from "next/link";
 import slugify from "slugify";
-const HomeSwiper = () => {
+import { getQuery } from "../service/getQuery";
+import Card2 from "./Card2";
+import Card3 from "./Card3";
+import styles from '../styles/style.css';
+
+const HomeLayout = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  async function homeSwiper() {
-    try {
-      const result = await getHeadlines();
-      setData(result.articles.results);
-      console.log(result);
-      setLoading(false);
-    } catch (error) {
-      console.error("error", error);
-    }
-  }
-  const handleCardClick = (response) => {
-    localStorage.setItem("selectedCardData", JSON.stringify(response));
-  };
+
   useEffect(() => {
-    homeSwiper();
+    async function fetchHeadlines() {
+      try {
+        const articles = await getQuery({ q: "headline" });
+        setData(articles);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error loading headlines:", error);
+      }
+    }
+    fetchHeadlines();
   }, []);
+
+  const handleCardClick = (article) => {
+    localStorage.setItem("selectedCardData", JSON.stringify(article));
+  };
+
   return (
-    <div>
-      <div>
-        <Container
-          maxWidth="xl"
-          sx={{ mt: { xs: "25%", md: "15%", lg: "10%" } }}
-        >
-          {loading ? (
-            <Skeleton height={500} width={"100%"} />
-          ) : (
+    <Container maxWidth="xl" sx={{ background: "#eceff2", marginTop: '6%' }}>
+      {loading ? (
+        <Skeleton height={500} width={"100%"} />
+      ) : (
+
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={2.5}>
+            {data.slice(0, 2).map((article, index) => (
+              <Card2
+              height={"150"}
+                key={index}
+                image={article.multimedia.length > 0 ? `https://www.nytimes.com/${article.multimedia[0].url}` : "/News-logo.jpg"}
+                title={article.headline.main}
+                description={article.snippet}
+              />
+            ))}
+
+          </Grid>
+          <Grid item xs={12} md={5}>
             <Swiper
-              className="w-full mt-10 justify-center "
-              modules={[Navigation, Scrollbar, A11y, Autoplay]}
-              slidesPerView={1}
+              className={`w-full h-4`}
+              modules={[Navigation, Pagination, Scrollbar, A11y, Autoplay]}
+              slidesPerView={'auto'}
               navigation
               pagination={{ clickable: true }}
               autoplay={{ delay: 2500, disableOnInteraction: false }}
             >
-              {data.map((article, index) => (
-                <SwiperSlide key={index}>
-                  {/* Render your content for each article here */}
-                  <div>
-                    <Link
-                      href={`/top-headlines/${slugify(article.title)}`}
-                      passHref
+              {data.map((article, title) => (
+                <SwiperSlide key={title} className={styles.swiperSlide}>
+                  <Link
+                    href={`/top-headlines/${slugify(article.headline.main)}`}
+                    passHref
+                  >
+                    <div
+                      onClick={() => handleCardClick(article)}
+                      className={styles.imageBox}
                     >
                       <img
-                        src={article.image ? article.image : "/News-logo.jpg"} //
-                        alt={article.title}
-                        style={{
-                          objectFit: "cover",
-                          height: "100%",
-                          width: "100%",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => handleCardClick(article)}
+                        src={
+                          article.multimedia.length > 0
+                            ? `https://www.nytimes.com/${article.multimedia[0].url}`
+                            : "/News-logo.jpg"
+                        }
+                        alt={article.headline.main}
+                        className={styles.image}
                       />
-                    </Link>
-                  </div>
+                    </div>
+                  </Link>
                 </SwiperSlide>
               ))}
             </Swiper>
-          )}
-        </Container>
-      </div>
-    </div>
+          </Grid>
+          <Grid item xs={12} md={4.5}>
+            {data.slice(3, 7).map((article, id) => (
+
+              <Card3 key={id}
+                image={article.multimedia.length > 0 ? `https://www.nytimes.com/${article.multimedia[0].url}` : "/News-logo.jpg"}
+                title={article.headline.main}
+                description={article.snippet}
+              />
+            ))}
+          </Grid>
+        </Grid>
+      )}
+    </Container>
   );
 };
 
-export default HomeSwiper;
+export default HomeLayout;

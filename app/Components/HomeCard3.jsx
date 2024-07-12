@@ -19,7 +19,6 @@ import { useRouter } from "next/navigation";
 import Checkbox from "@mui/material/Checkbox";
 import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
 import Favorite from "@mui/icons-material/Favorite";
-import { getPopularity } from "../service/getPopularity";
 import toast, { Toaster } from "react-hot-toast";
 import slugify from "slugify";
 import Link from "next/link";
@@ -28,6 +27,7 @@ import { db } from "../firebase";
 import Cookies from "js-cookie";
 import SkeletonCard from "./SkeletonCard";
 import CardSaple from "./CardSaple";
+import { getQuery } from "../service/getQuery";
 
 const HomeCard3 = () => {
   const [card, setCard] = useState([]);
@@ -43,7 +43,7 @@ const HomeCard3 = () => {
     // if online then get data from api
     if (isOnline) {
       try {
-        const card = await getPopularity();
+        const card = await getQuery();
         // store the data in firestore so we got it when user is offline
         if (card.articles) {
           try {

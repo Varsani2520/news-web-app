@@ -17,16 +17,15 @@ export default function Home() {
   ];
 
   return (
-    <div>
-      <Container maxWidth="xl">
-        <HomeSwiper />
-        <Divider1 text="Top Headlines" />
-        <HomeCard1 />
-        <Divider1 text="Categories Section" />
-        <HomeCard2 categories={categories} />
-        <Divider1 text="Trending Stories" />
-        <HomeCard3 />
-      </Container>
+    <div className="min-h-screen">
+      <HomeSwiper />
+      <Divider1 title="Latest News" />
+      <HomeCard1 />
+      <Divider1 title="Go to Editor's Choice" />
+
+      <HomeCard2 categories={categories} />
+      {/* <Divider1 text="Trending Stories" /> */}
+      {/* <HomeCard3 /> */}
     </div>
   );
 }

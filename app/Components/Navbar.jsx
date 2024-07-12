@@ -197,7 +197,7 @@ function Navbar() {
 
   return (
     <AppBar
-      position="fixed"
+      // position="fixed"
       sx={{
         background: "rgba(255, 255, 255, 0.8)",
         color: "black",
@@ -253,7 +253,7 @@ function Navbar() {
 
           <img
             src="/News-logo.jpg"
-            style={{ height: "100px", width: "170px" }}
+            style={{ height: "50px", width: "170px" }}
           />
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
